@@ -2,7 +2,7 @@
 -- 06_analysis_q1_q5.sql
 -- Tujuan : Menjawab 5 pertanyaan bisnis case study
 -- Sumber : analytics.fact_order_delivery
--- Filter  : in_analysis_period = true (Jan 2017 - Ags 2018, 96.203 pesanan)
+-- Filter  : in_analysis_period = true, anomali urutan tanggal dikecualikan (96.184 pesanan)
 -- ============================================
 
 
@@ -19,7 +19,8 @@ SELECT COUNT(*)                                                        AS total_
        ROUND(MAX(delay_days), 2)                                       AS telat_terparah,
        ROUND(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY lead_time_days)::numeric, 2) AS median_lead_time
 FROM analytics.fact_order_delivery
-WHERE in_analysis_period;
+WHERE in_analysis_period
+  AND NOT has_sequence_anomaly;
 
 -- Q1b. Tren bulanan
 -- DATE_TRUNC('month', tanggal) = potong tanggal jadi awal bulannya,
@@ -30,6 +31,7 @@ SELECT DATE_TRUNC('month', purchase_ts)::date                       AS bulan,
        ROUND(100.0 * COUNT(*) FILTER (WHERE is_late) / COUNT(*), 2)  AS persen_telat
 FROM analytics.fact_order_delivery
 WHERE in_analysis_period
+  AND NOT has_sequence_anomaly
 GROUP BY 1
 ORDER BY 1;
 
@@ -41,17 +43,19 @@ WHERE in_analysis_period AND NOT has_sequence_anomaly AND is_late;
 
 /* KESIMPULAN Q1 - Seberapa parah?
 
-   - Dari 96.203 pesanan (Jan 2017 - Ags 2018), 7.822 telat (8,13%).
+   - Dari 96.184 pesanan (Jan 2017 - Ags 2018), 7.822 telat (8,13%).
      OTD Rate = 91,87%.
    - Sekali telat, telatnya jauh: rata-rata 9,55 hari, terparah 188,98 hari.
      Waktu kirim normal (median) 10,21 hari.
-   - Tidak merata sepanjang waktu. Baseline 3-5%, tapi ada 3 bulan kritis:
+   - Tidak merata sepanjang waktu. Mayoritas bulan di bawah 6%, beberapa
+     naik ke 7-8%, tapi ada 3 bulan kritis:
        Nov 2017 = 14,31%  |  Feb 2018 = 15,99%  |  Mar 2018 = 21,36%
      Terbaik Jun 2018 = 1,36%.
    - Nov 2017 diikuti lonjakan volume +63% (4.478 -> 7.288) = masalah kapasitas
      Black Friday. Feb-Mar 2018 volumenya NORMAL tapi telatnya lebih parah,
      jadi BUKAN masalah kapasitas.
-   - Sejak Apr 2018 kinerja membaik dan bertahan.
+   - Sejak Apr 2018 kinerja membaik tapi naik-turun, belum stabil sampai
+     akhir periode.
 
    Implikasi: dua krisis, dua penyebab berbeda. Dibongkar di Q2.
 */
@@ -190,6 +194,10 @@ WHERE in_analysis_period
   AND NOT has_sequence_anomaly
 GROUP BY customer_state
 HAVING COUNT(*) >= 500
+-- Ambang 500 dipakai supaya provinsi bervolume kecil tidak menguasai peringkat.
+-- Dasbor Power BI tanpa ambang ini, jadi puncaknya Alagoas 23,99% (396 pesanan),
+-- bukan Maranhao 19,64% (713). Keduanya benar: query ini soal provinsi besar,
+-- dasbor soal semua provinsi.
 ORDER BY persen_telat DESC;
 
 
@@ -312,8 +320,8 @@ ORDER BY 1;
    JANJI PENGIRIMAN MAKIN KETAT (Q4a)
    - Buffer janji menyusut terus: 39,0 hari (Jan 2017) -> 13,4 hari (Ags 2018),
      turun 66%. Olist makin agresif menjanjikan kecepatan.
-   - Perbaikan Apr-Jul 2018 (telat 1,36%-5,31%) terjadi MESKI janjinya makin
-     ketat. Ini perbaikan operasional nyata, bukan sekadar longgarkan target.
+   - Perbaikan setelah Mar 2018 nyata tapi belum stabil: Apr 5,31% -> Mei 8,24% -> Jun 1,36%. 
+   	 Tetap terjadi MESKI janjinya makin ketat, jadi ini perbaikan operasional nyata, bukan sekadar longgarkan target.
    - Peringatan: Ags 2018 buffer terendah 13,4 hari, tapi telat naik lagi
      ke 10,39%. Janji mulai melewati batas kemampuan operasional.
    - Mar 2018 buffer justru diperketat (24,3 -> 21,3) tepat saat gangguan
