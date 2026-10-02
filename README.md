@@ -4,6 +4,9 @@
 Studi kasus operasional untuk menjawab: *seberapa parah keterlambatan pengiriman Olist, di mana akar masalahnya, dan berapa kerugiannya?*
 
 **Periode data:** Jan 2017 – Ags 2018 | **Basis analisis:** 96.184 pesanan | **Role:** Operations Data Analyst
+**Disusun oleh:** Arif Herfian Zaen Chartiko
+
+![Dashboard Power BI](05_dashboard/dashboard_overview.png)
 
 ---
 
@@ -14,10 +17,10 @@ On-Time Delivery Rate Olist = **91,87%** (8,13% pesanan telat). Terlihat sehat, 
 | # | Temuan | Angka Kunci |
 |---|--------|-------------|
 | 1 | Sekali telat, telatnya jauh | Rata-rata **9,55 hari**, terparah **188,98 hari** |
-| 2 | Masalah ada di jalan, bukan gudang | **87%** selisih waktu ada di transit kurir, hanya 7% di gudang penjual |
+| 2 | Masalah ada di jalan, bukan gudang | **86%** selisih waktu ada di transit kurir, hanya 14% di gudang penjual |
 | 3 | Penyebabnya geografi, bukan penjual/produk | Maranhão **19,64%** telat vs Paraná **5,02%** (3,9x) |
-| 4 | Ada titik jenuh kesabaran pelanggan | Ulasan buruk melonjak dari **19,22% → 61,29%** antara hari ke-3 dan ke-7 |
-| 5 | Kerugian terukur | **3.435 pelanggan kecewa** yang seharusnya tidak ada, menempel di pesanan senilai **BRL 1.123.857** |
+| 4 | Ada titik jenuh kesabaran pelanggan | Ulasan buruk melonjak dari **19,22% → 61,25%** antara hari ke-3 dan ke-7 |
+| 5 | Kerugian terukur | **3.435 pelanggan kecewa** yang seharusnya tidak ada, menempel di pesanan senilai **BRL 1.124.036** |
 
 **Rekomendasi utama:** target operasional bukan "nol keterlambatan", melainkan **"jangan sampai telat lebih dari 3 hari"**, dan perbaikan diarahkan ke jaringan kurir wilayah Utara/Timur Laut — bukan ke pembinaan penjual atau penanganan produk.
 
@@ -91,13 +94,13 @@ Proyek ini dikerjakan berurutan, tiap tahap membangun di atas tahap sebelumnya:
 - Basis akhir analisis: pesanan `delivered` dengan tanggal terima terisi, periode Jan 2017–Ags 2018 = **96.184 pesanan**.
 
 ### 4.2 Python (`03_python/01_validation.ipynb`)
-Menarik data dari `analytics.fact_order_delivery` lewat SQLAlchemy, lalu menghitung ulang metrik Q1/Q2/Q5 pakai Pandas untuk **cross-check independen** terhadap hasil SQL. Semua angka cocok. Hasil bersih diekspor ke `04_excel/fact_delivery.csv` (format Indonesia: separator `;`, desimal `,`).
+Menarik data dari `analytics.fact_order_delivery` lewat SQLAlchemy, lalu menghitung ulang metrik Q1/Q2/Q5 pakai Pandas untuk **cross-check independen** terhadap hasil SQL. Angka SQL pembandingnya diambil langsung lewat query di notebook (bukan diketik ulang), dan dibandingkan sebelum dibulatkan supaya beda cara pembulatan tidak terbaca sebagai selisih. Hasil bersih diekspor ke `04_excel/fact_delivery.csv` (format Indonesia: separator `;`, desimal `,`).
 
 ### 4.3 Excel (`04_excel/`)
 `01_crosscheck_metrics.xlsx` — verifikasi ketiga atas angka yang sama, memakai pivot table/formula manual di luar SQL dan Python.
 
 ### 4.4 Dashboard Power BI (`05_dashboard/`)
-`olist_ops_dashboard.pbix` (+ ekspor PDF & screenshot). Menyajikan versi interaktif dari temuan Q1–Q4 untuk eksplorasi mandiri oleh stakeholder.
+`olist_ops_dashboard.pbix` (+ ekspor PDF & screenshot `dashboard_overview.png`). Menyajikan versi interaktif dari temuan Q1–Q4 untuk eksplorasi mandiri oleh stakeholder.
 
 ### 4.5 Laporan (`06_report/`)
 `insight_report.md/.pdf/.docx` — laporan naratif lengkap: latar belakang, metode, temuan per pertanyaan, dan rekomendasi. Ini dokumen paling detail di proyek ini.
@@ -109,11 +112,11 @@ Menarik data dari `analytics.fact_order_delivery` lewat SQLAlchemy, lalu menghit
 
 ## 5. Enam Rekomendasi (diurutkan dari dampak terbesar)
 
-1. **Arahkan perbaikan ke jaringan kurir** — 87% selisih waktu telat ada di transit, pembinaan penjual hanya menyentuh 7%.
+1. **Arahkan perbaikan ke jaringan kurir** — 86% selisih waktu telat ada di transit, pembinaan penjual hanya menyentuh 14%.
 2. **Ubah target jadi "≤3 hari"**, bukan "nol keterlambatan" — kerusakan kepuasan melonjak di hari ke-3–7, jenuh setelah hari ke-8.
 3. **Tetapkan batas bawah buffer janji pengiriman** — buffer turun 66% dalam 20 bulan; di titik terendah (13,4 hari) keterlambatan naik lagi ke 10,39%.
 4. **Prioritaskan wilayah Utara & Timur Laut** (Maranhão, Ceará, Pará, Bahia) — konsisten terburuk, Maranhão hampir 4x Paraná.
-5. **Selidiki Rio de Janeiro secara terpisah** — telat 13,52% padahal transit hanya 8,38 hari (12.310 pesanan), menunjuk ke rumus estimasi tanggal janji, bukan kecepatan kirim.
+5. **Selidiki Rio de Janeiro secara terpisah** — telat 13,52% padahal median transit hanya 8,38 hari (12.310 pesanan). Ruang janjinya setara Minas Gerais, jadi bukan soal rumus janji; masalahnya 10% pesanan paling lambat yang transitnya 24+ hari (Minas Gerais 15 hari).
 6. **Siapkan dua protokol musiman berbeda** — Nov 2017 = masalah kapasitas gudang, Feb–Mar 2018 = gangguan jaringan kurir nasional. Satu solusi untuk keduanya akan meleset.
 
 ---
@@ -135,7 +138,7 @@ Diagnosis Keterlambatan Pengiriman Marketplace Olist/
 ## 7. Cara Reproduksi
 
 1. `CREATE DATABASE olist_ops;` lalu jalankan `02_sql/01_create_schema.sql`.
-2. Import 7 CSV di `01_data_raw/` sesuai `02_import_data.sql`.
+2. Dari folder utama proyek, jalankan `psql -U postgres -d olist_ops -f 02_sql/02_import_data.sql` (path CSV di dalamnya relatif ke folder utama).
 3. Jalankan `03_add_constraints.sql` → `04_data_quality_audit.sql` → `05_build_fact_table.sql` berurutan.
 4. Jalankan `06_analysis_q1_q5.sql`, `07_build_seller_view.sql`, `08_build_state_ref.sql`.
 5. (Opsional) Jalankan `03_python/01_validation.ipynb` untuk validasi silang.

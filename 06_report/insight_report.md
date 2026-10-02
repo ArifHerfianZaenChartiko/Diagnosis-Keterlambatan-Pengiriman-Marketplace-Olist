@@ -2,7 +2,7 @@
 
 Periode Jan 2017 – Ags 2018
 
-Disusun oleh Operations Analyst untuk Head of Logistics & Fulfillment
+Disusun oleh Arif Herfian Zaen Chartiko (Operations Analyst) untuk Head of Logistics & Fulfillment
 
 ---
 
@@ -14,13 +14,13 @@ Angka itu terdengar sehat, tetapi menyembunyikan tiga hal yang tidak terlihat da
 
 **Pertama, sekali telat, telatnya jauh.** Rata-rata keterlambatan 9,55 hari, dengan kasus terparah 188,98 hari. Keterlambatan di Olist bukan meleset beberapa jam, melainkan meleset lebih dari seminggu.
 
-**Kedua, masalahnya ada di jalan, bukan di gudang.** Pesanan yang telat menghabiskan 23,93 hari dalam perjalanan kurir, dibanding 6,93 hari pada pesanan tepat waktu. Dari total selisih 19,44 hari antara pesanan telat dan tepat waktu, 87% terjadi di tahap pengiriman kurir dan hanya 7% di gudang penjual. Pembinaan penjual tidak akan menyentuh akar masalahnya.
+**Kedua, masalahnya ada di jalan, bukan di gudang.** Pesanan yang telat menghabiskan 23,93 hari dalam perjalanan kurir, dibanding 6,93 hari pada pesanan tepat waktu. Dari total selisih rata-rata 20,64 hari antara pesanan telat dan tepat waktu, 86% terjadi di tahap pengiriman kurir dan hanya 14% di gudang penjual. Pembinaan penjual tidak akan menyentuh akar masalahnya.
 
-**Ketiga, kerusakannya terjadi lebih cepat dari dugaan.** Skor ulasan jatuh dari 4,30 menjadi 2,57 ketika pesanan telat. Titik patahnya ada antara hari ke-3 dan ke-7: ulasan 1–2 bintang melonjak dari 19,22% menjadi 61,29%. Setelah hari ke-8, kerusakannya jenuh — telat 10 hari dan telat 60 hari sama-sama menghasilkan sekitar 78% ulasan buruk.
+**Ketiga, kerusakannya terjadi lebih cepat dari dugaan.** Skor ulasan jatuh dari 4,30 menjadi 2,57 ketika pesanan telat. Titik patahnya ada antara hari ke-3 dan ke-7: ulasan 1–2 bintang melonjak dari 19,22% menjadi 61,25%. Setelah hari ke-8, kerusakannya jenuh — telat 10 hari dan telat 60 hari sama-sama menghasilkan sekitar 78% ulasan buruk.
 
 Konsekuensinya untuk strategi operasional: **target yang tepat bukan "nol keterlambatan", melainkan "jangan sampai telat lebih dari 3 hari".** Menekan keterlambatan parah menjadi keterlambatan ringan menyelamatkan sebagian besar kepuasan pelanggan dengan biaya yang jauh lebih murah daripada mengejar ketepatan sempurna.
 
-Dampak yang bisa dihitung dari periode ini: 3.435 pelanggan kecewa yang seharusnya tidak ada, melekat pada pesanan senilai BRL 1.123.857.
+Dampak yang bisa dihitung dari periode ini: 3.435 pelanggan kecewa yang seharusnya tidak ada, melekat pada pesanan senilai BRL 1.124.036.
 
 ---
 
@@ -63,7 +63,7 @@ Pemisahan inilah yang memungkinkan pertanyaan Q2 dijawab secara tegas, bukan lew
 
 **Penanganan anomali.** 19 pesanan tercatat diterima pelanggan lebih dulu daripada diserahkan ke kurir — mustahil secara fisik, dan menghasilkan waktu transit negatif. Pesanan ini ditandai `has_sequence_anomaly` dan dikeluarkan dari seluruh perhitungan. Seluruhnya kebetulan berstatus tepat waktu, sehingga jumlah pesanan telat tidak berubah.
 
-**Rata-rata dan median dilaporkan bersama.** Rata-rata dipakai untuk menaksir beban total, median untuk menggambarkan pengalaman pelanggan pada umumnya. Keduanya diperlukan karena sebaran keterlambatan sangat miring.
+**Rata-rata dan median dilaporkan bersama.** Rata-rata dipakai untuk menaksir beban total, median untuk menggambarkan pengalaman pelanggan pada umumnya. Keduanya diperlukan karena sebaran keterlambatan sangat miring. Khusus untuk membagi selisih waktu ke tiap tahap, dipakai rata-rata, karena hanya rata-rata yang bisa dijumlahkan: rata-rata ke kurir ditambah rata-rata transit sama dengan rata-rata total.
 
 ---
 
@@ -93,7 +93,15 @@ Membandingkan pesanan telat dengan pesanan tepat waktu pada kedua ruas perjalana
 
 > **Cara membaca tabel ini.** Ketiga angka pada setiap baris adalah median yang dihitung terpisah, bukan penjumlahan. Median dari sebuah total tidak sama dengan total dari median, sehingga baris Total sengaja tidak sama dengan hasil menjumlahkan dua baris di atasnya. Median dipakai, bukan rata-rata, karena sebaran waktu pengiriman sangat miring oleh kasus ekstrem.
 
-Dari total selisih 19,44 hari, sekitar 17 hari atau 87% berasal dari tahap transit, dan sekitar 1,3 hari atau 7% dari gudang penjual. Sisa 6% adalah efek perhitungan median yang baru disebutkan, bukan tahap ketiga yang belum teridentifikasi. Gudang penjual memang ikut melambat pada pesanan yang telat, tetapi kontribusinya kecil dan tidak menjelaskan besarnya masalah.
+Karena median tidak bisa dijumlahkan, porsi tiap tahap dihitung dari rata-ratanya:
+
+| Tahap                    | Tepat waktu    | Telat          | Selisih (porsi)         |
+| ------------------------ | -------------- | -------------- | ----------------------- |
+| Ke kurir (porsi penjual) | 2,97 hari      | 5,81 hari      | 2,84 hari (14%)         |
+| Transit (porsi kurir)    | 7,90 hari      | 25,69 hari     | 17,79 hari (86%)        |
+| **Total**                | **10,86 hari** | **31,50 hari** | **20,64 hari (100%)**   |
+
+Dari total selisih 20,64 hari, 86% berasal dari tahap transit dan 14% dari gudang penjual. Gudang penjual memang ikut melambat pada pesanan yang telat, tetapi kontribusinya kecil dan tidak menjelaskan besarnya masalah.
 
 Pemecahan per bulan memperkuat kesimpulan itu sekaligus membedakan kedua krisis. Terhadap tingkat dasar 2,2 hari ke kurir dan 7,0 hari transit:
 
@@ -125,9 +133,18 @@ Penjual yang benar-benar bermasalah justru bervolume kecil dan tidak terlihat di
 
 Provinsi di utara dan timur laut — Maranhão, Ceará, Pará, Bahia — konsisten menempati posisi terburuk. Sebaliknya São Paulo menyerap 40.386 pesanan atau 42% dari seluruh volume, dengan kinerja terbaik kedua.
 
-Satu pengecualian layak diselidiki terpisah: **Rio de Janeiro mencatat 13,52% keterlambatan padahal transitnya hanya 8,38 hari** — jauh lebih cepat dari Maranhão maupun Pará. Dengan volume 12.310 pesanan, ini bukan kasus kecil. Dugaan yang paling masuk akal adalah tanggal janji yang terlalu optimis untuk Rio de Janeiro, bukan persoalan jarak atau jaringan.
+Satu pengecualian layak diselidiki terpisah: **Rio de Janeiro mencatat 13,52% keterlambatan padahal median transitnya hanya 8,38 hari** — jauh lebih cepat dari Maranhão maupun Pará. Dengan volume 12.310 pesanan, ini bukan kasus kecil.
 
-**Jenis produk bukan faktor.** Perbedaan tingkat keterlambatan antarkategori produk tidak menunjukkan pola yang cukup kuat untuk ditindaklanjuti, termasuk setelah berat produk diperhitungkan.
+Dugaan pertama adalah tanggal janji untuk Rio de Janeiro terlalu optimis. Data membantah dugaan itu. Ruang antara janji dan transit di Rio de Janeiro justru setara dengan Minas Gerais, yang tingkat telatnya hanya 5,63%. Yang berbeda adalah ekornya:
+
+| Provinsi            | Telat  | Ruang janji | Transit p90 |
+| ------------------- | ------ | ----------- | ----------- |
+| Rio de Janeiro (RJ) | 13,52% | 16,21 hari  | 24,18 hari  |
+| Minas Gerais (MG)   | 5,63%  | 16,38 hari  | 15,18 hari  |
+
+Ruang janji adalah median selisih janji dikurangi median transit (RJ 24,59 − 8,38 hari; MG 23,58 − 7,20 hari). Pesanan ke Rio de Janeiro pada umumnya sampai cepat, tetapi 10% yang paling lambat butuh 24 hari atau lebih, sembilan hari lebih lama dari Minas Gerais. Masalah Rio de Janeiro adalah **transit yang tidak konsisten**, bukan rumus janji.
+
+**Jenis produk bukan faktor utama.** Dari 21 kategori dengan minimal 1.000 item, tingkat keterlambatan berada di rentang 5,39% sampai 9,75% — jauh lebih sempit dari rentang antarprovinsi 5,02% sampai 19,64%. Berat produk juga tidak menunjukkan pola: electronics yang ringan (median 200 g) justru tertinggi, sementara office_furniture yang berat (median 10.975 g) berada di 8,91%.
 
 > **Catatan pembacaan.** Peringkat provinsi di atas dibatasi pada provinsi dengan minimal 500 pesanan, supaya provinsi bervolume kecil tidak menguasai daftar hanya karena penyebutnya sedikit. Dasbor tidak memakai batas tersebut, sehingga puncaknya berbeda: Alagoas 23,99% dari 396 pesanan dan Piauí 16,00% dari 475 pesanan. Keduanya benar, hanya menjawab pertanyaan yang berbeda — laporan ini menyoroti provinsi bervolume besar yang bermasalah, dasbor menampilkan seluruh provinsi.
 
@@ -139,23 +156,25 @@ Perbaikan setelah Mar 2018 nyata tetapi belum stabil. Apr turun ke 5,31%, naik l
 
 Namun ada peringatan di ujung periode. Pada Ags 2018 selisih janji berada di titik terendah, 13,4 hari, dan keterlambatan justru naik kembali ke 10,39%. Janji mulai melewati batas kemampuan operasional. Pola serupa terlihat pada Mar 2018, ketika selisih janji justru diperketat dari 24,3 menjadi 21,3 hari tepat saat gangguan pengiriman sedang berlangsung, sehingga memperparah angka keterlambatan bulan itu.
 
-**Krisis Mar 2018 bersifat nasional.** Seluruh 11 provinsi yang dianalisis memburuk tanpa kecuali:
+**Krisis Mar 2018 bersifat nasional.** Dibandingkan dengan Jan dan Apr 2018, dua bulan normal yang mengapitnya, seluruh 11 provinsi yang dianalisis memburuk tanpa kecuali. Secara nasional tingkat telat melonjak dari 5,9% menjadi 21,4%.
 
-| Provinsi            | Kenaikan tingkat telat |
-| ------------------- | ---------------------- |
-| Espírito Santo (ES) | +29,7 poin             |
-| Bahia (BA)          | +17,7 poin             |
-| Rio de Janeiro (RJ) | +17,6 poin             |
-| Minas Gerais (MG)   | +17,5 poin             |
-| São Paulo (SP)      | +7,0 poin              |
+| Provinsi            | Jan + Apr | Mar   | Kenaikan   |
+| ------------------- | --------- | ----- | ---------- |
+| Espírito Santo (ES) | 14,0%     | 44,4% | +30,4 poin |
+| Rio de Janeiro (RJ) | 10,4%     | 36,9% | +26,5 poin |
+| Minas Gerais (MG)   | 3,4%      | 23,2% | +19,8 poin |
+| Bahia (BA)          | 15,8%     | 35,3% | +19,5 poin |
+| São Paulo (SP)      | 3,0%      | 11,7% | +8,7 poin  |
 
-Bahkan São Paulo, provinsi dengan kinerja paling stabil, naik dari 4,7% menjadi 11,7% atas 2.971 pesanan. Keseragaman ini menutup kemungkinan bahwa krisis berasal dari satu wilayah, satu penjual, atau satu mitra lokal. Yang terjadi adalah gangguan jaringan pengiriman berskala nasional.
+Feb 2018 sengaja tidak dipakai sebagai pembanding karena bulan itu sendiri sudah krisis (15,99%).
+
+Bahkan São Paulo, provinsi dengan kinerja paling stabil, naik dari 3,0% menjadi 11,7% atas 2.971 pesanan. Keseragaman ini menutup kemungkinan bahwa krisis berasal dari satu wilayah, satu penjual, atau satu mitra lokal. Yang terjadi adalah gangguan jaringan pengiriman berskala nasional.
 
 **Hari pembelian tidak berpengaruh.** Tingkat keterlambatan berkisar sempit antara 7,50% dan 9,07%, dengan Senin tertinggi dan Minggu terendah. Selisihnya tidak cukup besar untuk dijadikan dasar tindakan.
 
 ### 4.5 Berapa kerugiannya
 
-**Dampaknya besar dan terukur.** Skor ulasan rata-rata jatuh dari 4,30 pada pesanan tepat waktu menjadi 2,57 pada pesanan terlambat. Proporsi ulasan 1–2 bintang melonjak dari 9,19% menjadi 54,06%, hampir enam kali lipat, sementara ulasan 5 bintang anjlok dari 62,45% menjadi 22,24%.
+**Dampaknya besar dan terukur.** Skor ulasan rata-rata jatuh dari 4,30 pada pesanan tepat waktu menjadi 2,57 pada pesanan terlambat. Proporsi ulasan 1–2 bintang melonjak dari 9,19% menjadi 54,05%, hampir enam kali lipat, sementara ulasan 5 bintang anjlok dari 62,45% menjadi 22,25%.
 
 **Ada ambang batas kesabaran pelanggan.** Memecah pesanan terlambat berdasarkan lamanya keterlambatan mengungkap pola yang tidak linear:
 
@@ -163,24 +182,24 @@ Bahkan São Paulo, provinsi dengan kinerja paling stabil, naik dari 4,7% menjadi
 | ------------------------ | ----------- | ------------------ |
 | Tepat waktu              | 4,30        | 9,19%              |
 | Telat 1–3 hari           | 3,76        | 19,22%             |
-| Telat 4–7 hari           | 2,32        | **61,29%**         |
+| Telat 4–7 hari           | 2,32        | **61,25%**         |
 | Telat 8–15 hari          | 1,73        | 78,58%             |
 | Telat lebih dari 15 hari | 1,72        | 78,30%             |
 
-Titik patahnya berada antara hari ke-3 dan ke-7: ulasan buruk melompat tiga kali lipat, dari 19,22% ke 61,29%. Setelah hari ke-8 kerusakannya jenuh — pesanan yang telat 10 hari dan yang telat 60 hari sama-sama menghasilkan sekitar 78% ulasan buruk. Pelanggan sudah terlanjur kecewa, dan tambahan keterlambatan tidak lagi mengubah penilaiannya.
+Titik patahnya berada antara hari ke-3 dan ke-7: ulasan buruk melompat tiga kali lipat, dari 19,22% ke 61,25%. Setelah hari ke-8 kerusakannya jenuh — pesanan yang telat 10 hari dan yang telat 60 hari sama-sama menghasilkan sekitar 78% ulasan buruk. Pelanggan sudah terlanjur kecewa, dan tambahan keterlambatan tidak lagi mengubah penilaiannya.
 
 Temuan ini bersambung dengan 4.1: median keterlambatan Olist adalah 5,81 hari, yang jatuh tepat di dalam kelompok 4–7 hari. Artinya keterlambatan yang **khas** pun sudah cukup parah untuk merusak kepuasan pelanggan — persoalannya bukan hanya pada kasus ekstrem.
 
-**Biaya yang bisa dihitung.** Pesanan terlambat menghasilkan 4.139 ulasan buruk. Seandainya pesanan tersebut tiba tepat waktu, dengan tingkat ulasan buruk 9,19% hanya sekitar 704 ulasan buruk yang wajar muncul. Selisihnya, **3.435 pelanggan kecewa yang seharusnya tidak ada**, sepenuhnya disebabkan keterlambatan.
+**Biaya yang bisa dihitung.** Pesanan terlambat menghasilkan 4.139 ulasan buruk. Seandainya pesanan tersebut tiba tepat waktu, dengan tingkat ulasan buruk 9,19% hanya sekitar 704 ulasan buruk yang wajar muncul. Selisihnya, **3.435 pelanggan kecewa yang seharusnya tidak ada**, adalah taksiran ulasan buruk yang muncul karena keterlambatan. Taksiran ini berasumsi pesanan yang telat, seandainya tepat waktu, akan dinilai sama seperti pesanan tepat waktu lainnya.
 
-Pesanan yang terlambat itu bernilai **BRL 1.123.857**. Angka ini adalah nilai pesanan yang terdampak, bukan kerugian finansial langsung — barangnya tetap terkirim dan tetap dibayar. Fungsinya sebagai ukuran skala pendapatan yang berisiko terhadap kepercayaan pelanggan, bukan sebagai nilai kerugian yang harus ditanggung.
+Pesanan yang terlambat itu bernilai **BRL 1.124.036**. Angka ini adalah nilai pesanan yang terdampak, bukan kerugian finansial langsung — barangnya tetap terkirim dan tetap dibayar. Fungsinya sebagai ukuran skala pendapatan yang berisiko terhadap kepercayaan pelanggan, bukan sebagai nilai kerugian yang harus ditanggung.
 
 ---
 
 ## 5. Rekomendasi
 
 **1. Arahkan perbaikan ke jaringan kurir, bukan ke pembinaan penjual.**
-Dasarnya 4.2: 87% selisih waktu antara pesanan telat dan tepat waktu terjadi di tahap transit. Program pembinaan penjual menyentuh ruas yang hanya menyumbang 7%, sehingga dampaknya terhadap angka keseluruhan akan kecil sekalipun berhasil.
+Dasarnya 4.2: 86% selisih waktu antara pesanan telat dan tepat waktu terjadi di tahap transit. Program pembinaan penjual menyentuh ruas yang hanya menyumbang 14%, sehingga dampaknya terhadap angka keseluruhan akan kecil sekalipun berhasil.
 
 **2. Ubah target dari "nol keterlambatan" menjadi "tidak telat lebih dari 3 hari".**
 Dasarnya 4.5: kerusakan kepuasan pelanggan melonjak antara hari ke-3 dan ke-7, lalu jenuh setelah hari ke-8. Menarik pesanan yang telat 10 hari menjadi telat 3 hari menyelamatkan sebagian besar kepuasan, dan jauh lebih murah daripada mengejar ketepatan sempurna pada seluruh pesanan.
@@ -192,7 +211,7 @@ Dasarnya 4.4: selisih janji menyusut 66% dalam 20 bulan, dan pada Ags 2018 di an
 Dasarnya 4.3: Maranhão, Ceará, Pará, dan Bahia konsisten terburuk, dengan Maranhão hampir empat kali lipat Paraná. Penambahan titik distribusi atau mitra kurir alternatif di wilayah ini menyasar bagian masalah yang terbesar.
 
 **5. Selidiki Rio de Janeiro secara terpisah.**
-Dasarnya 4.3: RJ mencatat 13,52% keterlambatan padahal transitnya hanya 8,38 hari, atas volume 12.310 pesanan. Pola ini menunjuk ke penetapan tanggal janji, bukan ke kecepatan pengiriman. Perbaikan di sini kemungkinan besar cukup dilakukan lewat penyesuaian rumus estimasi, tanpa biaya operasional tambahan.
+Dasarnya 4.3: RJ mencatat 13,52% keterlambatan padahal median transitnya hanya 8,38 hari, atas volume 12.310 pesanan. Ruang janjinya setara Minas Gerais, jadi masalahnya bukan rumus janji, melainkan 10% pesanan paling lambat yang transitnya mencapai 24 hari atau lebih. Langkah berikutnya adalah menelusuri pesanan-pesanan di ekor ini — kota tujuan, asal penjual, dan rute — untuk menemukan titik macetnya. Memperlebar janji untuk seluruh Rio de Janeiro hanya akan menutupi masalah pada 90% pesanan yang sebenarnya sudah lancar.
 
 **6. Siapkan dua protokol musiman yang berbeda.**
 Dasarnya 4.2: Nov 2017 adalah masalah kapasitas gudang, sedangkan Feb–Mar 2018 adalah gangguan jaringan kurir. Musim puncak membutuhkan penambahan kapasitas penanganan di sisi penjual, sementara gangguan jaringan membutuhkan rencana cadangan rute dan mitra. Menyiapkan satu protokol untuk keduanya akan meleset pada salah satunya.
@@ -205,13 +224,13 @@ Dasarnya 4.2: Nov 2017 adalah masalah kapasitas gudang, sedangkan Feb–Mar 2018
 
 **Periode.** Data berakhir pada Ags 2018. Tren perbaikan sejak Apr 2018 belum dapat dipastikan bertahan, dan kenaikan pada Ags 2018 belum dapat dipastikan sebagai awal pembalikan arah atau sekadar fluktuasi satu bulan.
 
-**Nilai kerugian.** BRL 1.123.857 adalah nilai pesanan yang terlambat, bukan kerugian yang benar-benar keluar. Data yang tersedia tidak memuat biaya kurir, biaya penanganan keluhan, maupun nilai pelanggan yang berhenti berbelanja, sehingga dampak finansial sesungguhnya tidak dapat dihitung dari sini.
+**Nilai kerugian.** BRL 1.124.036 adalah nilai pesanan yang terlambat, bukan kerugian yang benar-benar keluar. Data yang tersedia tidak memuat biaya kurir, biaya penanganan keluhan, maupun nilai pelanggan yang berhenti berbelanja, sehingga dampak finansial sesungguhnya tidak dapat dihitung dari sini.
 
-**Ukuran kepuasan.** Kepuasan pelanggan diwakili oleh skor ulasan. 646 pesanan tanpa ulasan dikeluarkan dari perhitungan Q5. Pelanggan yang kecewa tetapi tidak menulis ulasan tidak terwakili.
+**Ukuran kepuasan.** Kepuasan pelanggan diwakili oleh skor ulasan. 643 pesanan tanpa ulasan dikeluarkan dari perhitungan Q5. Pelanggan yang kecewa tetapi tidak menulis ulasan tidak terwakili.
 
 **Ambang volume.** Peringkat provinsi pada 4.3 memakai batas minimal 500 pesanan. Provinsi bervolume kecil dengan tingkat keterlambatan tinggi — Alagoas dan Piauí — tidak muncul di peringkat tersebut meskipun angkanya lebih buruk.
 
-**Hubungan sebab akibat.** Analisis ini menunjukkan keterkaitan yang kuat antara lama transit dan tingkat keterlambatan, serta antara keterlambatan dan skor ulasan. Penyebab gangguan jaringan pada Feb–Mar 2018 sendiri tidak dapat dipastikan dari data yang tersedia, karena tidak ada informasi mengenai mitra kurir, rute, maupun kejadian eksternal.
+**Hubungan sebab akibat.** Analisis ini menunjukkan keterkaitan yang kuat antara lama transit dan tingkat keterlambatan, serta antara keterlambatan dan skor ulasan. Penyebab gangguan jaringan pada Feb–Mar 2018 sendiri tidak dapat dipastikan dari data yang tersedia, karena tidak ada informasi mengenai mitra kurir, rute, maupun kejadian eksternal. Hal yang sama berlaku untuk ekor transit panjang di Rio de Janeiro: datanya menunjukkan di mana masalahnya, tetapi belum bisa menjelaskan mengapa.
 
 ---
 

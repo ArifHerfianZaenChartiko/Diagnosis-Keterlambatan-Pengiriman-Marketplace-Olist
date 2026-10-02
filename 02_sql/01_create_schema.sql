@@ -7,10 +7,9 @@
 --             NOT NULL tidak dipakai karena data sumber banyak yang kosong.
 -- =============================================================================
 
--- Membuat database olist_ops (jalankan di database postgres)
-CREATE DATABASE olist_ops;
-
--- Pindah ke database olist_ops
+-- Database dibuat terpisah, sebelum script ini (jalankan di database postgres):
+--   CREATE DATABASE olist_ops;
+-- Lalu pindah ke database olist_ops dan jalankan sisa script di bawah.
 
 -- Membuat skema raw dan analytics untuk pemisahan data mentah dan diolah
 CREATE SCHEMA raw;

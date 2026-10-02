@@ -66,7 +66,7 @@ WHERE in_analysis_period AND NOT has_sequence_anomaly AND is_late;
      meleset <= 5,81 hari, sementara segelintir kasus ekstrem (terparah
      188,98 hari) menarik rata-rata jauh ke atas.
    - Median 5,81 hari jatuh di kelompok "telat 4-7 hari" (Q5b), yaitu titik
-     di mana ulasan 1-2 bintang melonjak dari 19,22% ke 61,29%.
+     di mana ulasan 1-2 bintang melonjak dari 19,22% ke 61,25%.
      Artinya keterlambatan yang khas pun SUDAH cukup parah untuk merusak
      kepuasan pelanggan - bukan cuma kasus ekstremnya.
    - Kedua angka dilaporkan bersama: rata-rata untuk menaksir total beban,
@@ -78,7 +78,7 @@ WHERE in_analysis_period AND NOT has_sequence_anomaly AND is_late;
 -- ============================================
 -- Q2: DI TAHAP MANA KETERLAMBATAN TERJADI?
 -- Tahapan: (1) beli -> ke kurir   (2) kurir -> pelanggan
--- 23 pesanan berurutan tanggal mustahil dikecualikan.
+-- 19 pesanan berurutan tanggal mustahil (dalam periode) dikecualikan.
 -- ============================================
 
 -- Q2a. Bandingkan pesanan telat vs tepat waktu
@@ -104,13 +104,32 @@ WHERE in_analysis_period
 GROUP BY 1
 ORDER BY 1;
 
+-- Q2c. Pembagian selisih waktu pakai RATA-RATA
+-- Median tidak bisa dijumlahkan (median ke kurir + median transit != median total),
+-- jadi untuk menghitung porsi tiap tahap dipakai rata-rata: ke kurir + transit = total.
+-- 1 pesanan tanpa tanggal serah kurir dikeluarkan supaya ketiga kolom sebanding.
+SELECT is_late,
+       COUNT(*)                     AS jumlah_pesanan,
+       ROUND(AVG(handover_days), 2)  AS rata2_ke_kurir,
+       ROUND(AVG(transit_days), 2)   AS rata2_transit,
+       ROUND(AVG(lead_time_days), 2) AS rata2_total
+FROM analytics.fact_order_delivery
+WHERE in_analysis_period
+  AND NOT has_sequence_anomaly
+  AND carrier_ts IS NOT NULL
+GROUP BY is_late
+ORDER BY is_late;
+
 /* KESIMPULAN Q2 - Telat terjadi di tahap mana?
 
-   - Pesanan tepat waktu: ke kurir 2,13 | transit 6,93 | total 9,71 hari
+   - Median (pengalaman pesanan pada umumnya):
+     Pesanan tepat waktu: ke kurir 2,13 | transit 6,93 | total 9,71 hari
      Pesanan telat      : ke kurir 3,43 | transit 23,93 | total 29,15 hari
-   - Dari selisih 19,44 hari, transit menyumbang ~17 hari (87%), gudang
-     penjual hanya ~1,3 hari (7%). Transit pesanan telat 3,5x lebih lama,
-     gudang hanya 1,6x.
+     Transit pesanan telat 3,5x lebih lama, gudang hanya 1,6x.
+   - Porsi tiap tahap (Q2c, rata-rata supaya bisa dijumlah):
+     Tepat waktu: ke kurir 2,97 | transit  7,90 | total 10,86 hari
+     Telat      : ke kurir 5,81 | transit 25,69 | total 31,50 hari
+     Selisih 20,64 hari = transit 17,79 hari (86%) + gudang 2,84 hari (14%).
    - Per bulan (baseline: ke kurir 2,2 | transit 7,0):
        Nov 2017  ke kurir 3,16 (+44%)  -> yang memburuk GUDANG PENJUAL
        Feb 2018  transit 11,02 (+57%)  -> yang memburuk PENGIRIMAN KURIR
@@ -216,8 +235,28 @@ WHERE f.in_analysis_period
   AND NOT f.has_sequence_anomaly
 GROUP BY tr.product_category_name_english
 HAVING COUNT(*) >= 1000
-ORDER BY persen_telat DESC
-LIMIT 10;
+-- Tanpa LIMIT: semua 21 kategori ditampilkan supaya rentangnya terlihat utuh
+-- (kalau cuma 10 teratas, yang kelihatan hanya kategori terburuk).
+ORDER BY persen_telat DESC;
+
+
+-- Q3e. Rio de Janeiro: janjinya terlalu ketat, atau transitnya yang tidak stabil?
+-- ruang_janji = median buffer janji - median transit.
+-- Kalau RJ telat karena janjinya terlalu optimis, ruang_janji RJ harusnya paling sempit.
+-- p90_transit = 10% pesanan paling lambat butuh transit selama ini atau lebih.
+SELECT customer_state,
+       COUNT(*)                                                     AS total_pesanan,
+       ROUND(100.0 * COUNT(*) FILTER (WHERE is_late) / COUNT(*), 2) AS persen_telat,
+       ROUND(PERCENTILE_CONT(0.5) WITHIN GROUP (
+             ORDER BY EXTRACT(EPOCH FROM (estimated_ts - purchase_ts))/86400.0)::numeric, 2) AS median_buffer_janji,
+       ROUND(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY transit_days)::numeric, 2) AS median_transit,
+       ROUND(PERCENTILE_CONT(0.9) WITHIN GROUP (ORDER BY transit_days)::numeric, 2) AS p90_transit
+FROM analytics.fact_order_delivery
+WHERE in_analysis_period
+  AND NOT has_sequence_anomaly
+GROUP BY customer_state
+HAVING COUNT(*) >= 500
+ORDER BY persen_telat DESC;
 
 /* KESIMPULAN Q3 - Penyebabnya GEOGRAFI, bukan penjual atau produk
 
@@ -236,16 +275,22 @@ LIMIT 10;
        MA 19,64% (transit 15,68 hari) | PA 12,42% (transit 17,30)
        SP  5,90% (transit  4,42 hari) | PR  5,02% (transit  7,18)
    - Provinsi utara/timur laut (MA, CE, PA, BA) konsisten terburuk.
-   - Pengecualian yang perlu diselidiki: RJ telat 13,52% padahal
-     transitnya hanya 8,38 hari. Volumenya besar (12.310 pesanan).
-     Dugaan: tanggal janji terlalu optimis untuk RJ, bukan soal jarak.
+   - Pengecualian: RJ telat 13,52% padahal median transitnya hanya 8,38 hari.
+     Volumenya besar (12.310 pesanan).
+   - Awalnya diduga janji untuk RJ terlalu optimis. Q3e MEMBANTAH dugaan itu:
+       ruang janji (buffer - transit) RJ 16,21 hari, setara MG 16,38 hari
+       yang telatnya cuma 5,63%.
+     Bedanya di ekor: p90 transit RJ 24,18 hari vs MG 15,18 hari.
+     Pesanan RJ pada umumnya cepat, tapi 10% paling lambat SANGAT lambat.
+     Masalah RJ = transit yang tidak konsisten, bukan rumus janji.
    - SP menyerap 40.386 pesanan (42% total) dengan kinerja terbaik kedua.
 
-   PRODUK (Q3d) - BUKAN FAKTOR
-   - Rentang antar kategori sangat sempit: 8,29% - 9,75%.
-     Semuanya dekat rata-rata 8,13%.
+   PRODUK (Q3d) - BUKAN FAKTOR UTAMA
+   - 21 kategori (min. 1.000 item) berada di rentang 5,39% - 9,75%,
+     jauh lebih sempit dari rentang provinsi 5,02% - 19,64%.
    - Berat tidak berpengaruh: electronics (200 g) justru tertinggi 9,75%,
-     sementara office_furniture (10.975 g) 8,91%.
+     office_furniture (10.975 g) 8,91%, luggage_accessories (1.250 g)
+     terendah 5,39%.
    - Kesimpulan: jenis dan berat produk tidak menentukan keterlambatan.
 
    IMPLIKASI: perbaikan harus diarahkan ke JARINGAN PENGIRIMAN ke wilayah
@@ -275,27 +320,27 @@ ORDER BY 1;
 
 
 -- Q4b. Krisis Mar 2018: merata di semua wilayah, atau terkonsentrasi?
--- Pembanding: Jan + Apr 2018 (bulan normal yang mengapitnya)
+-- Pembanding: Jan + Apr 2018 (bulan normal yang mengapitnya).
+-- Feb 2018 sengaja TIDAK ikut pembanding karena Feb sendiri bulan krisis (15,99%).
+-- Versi sebelumnya memakai "< Mar OR >= Apr", sehingga Feb ikut terhitung
+-- dan kenaikan di Maret jadi terlihat lebih kecil dari sebenarnya.
 SELECT *,
        ROUND(mar_persen - baseline_persen, 1) AS selisih_poin
 FROM (
     SELECT customer_state,
-           COUNT(*) FILTER (WHERE purchase_ts >= '2018-03-01'
-                              AND purchase_ts <  '2018-04-01') AS pesanan_mar,
-           ROUND(100.0 * COUNT(*) FILTER (WHERE is_late
-                              AND purchase_ts >= '2018-03-01'
-                              AND purchase_ts <  '2018-04-01')
-                 / NULLIF(COUNT(*) FILTER (WHERE purchase_ts >= '2018-03-01'
-                              AND purchase_ts <  '2018-04-01'), 0), 1) AS mar_persen,
-           ROUND(100.0 * COUNT(*) FILTER (WHERE is_late
-                              AND purchase_ts <  '2018-03-01'
-                               OR is_late AND purchase_ts >= '2018-04-01')
-                 / NULLIF(COUNT(*) FILTER (WHERE purchase_ts <  '2018-03-01'
-                                             OR purchase_ts >= '2018-04-01'), 0), 1) AS baseline_persen
-    FROM analytics.fact_order_delivery
-    WHERE NOT has_sequence_anomaly
-      AND purchase_ts >= '2018-01-01'
-      AND purchase_ts <  '2018-05-01'
+           COUNT(*) FILTER (WHERE bulan = 3) AS pesanan_mar,
+           ROUND(100.0 * COUNT(*) FILTER (WHERE is_late AND bulan = 3)
+                 / NULLIF(COUNT(*) FILTER (WHERE bulan = 3), 0), 1)        AS mar_persen,
+           ROUND(100.0 * COUNT(*) FILTER (WHERE is_late AND bulan IN (1, 4))
+                 / NULLIF(COUNT(*) FILTER (WHERE bulan IN (1, 4)), 0), 1)  AS baseline_persen
+    FROM (
+        SELECT customer_state, is_late,
+               EXTRACT(MONTH FROM purchase_ts)::int AS bulan
+        FROM analytics.fact_order_delivery
+        WHERE NOT has_sequence_anomaly
+          AND purchase_ts >= '2018-01-01'
+          AND purchase_ts <  '2018-05-01'
+    ) b
     GROUP BY customer_state
     HAVING COUNT(*) FILTER (WHERE purchase_ts >= '2018-03-01'
                               AND purchase_ts <  '2018-04-01') >= 100
@@ -328,9 +373,10 @@ ORDER BY 1;
      terjadi, sehingga memperparah angka keterlambatan.
 
    KRISIS MAR 2018 BERSIFAT NASIONAL (Q4b)
-   - SELURUH 11 provinsi memburuk, tanpa kecuali:
-       ES +29,7 poin | BA +17,7 | RJ +17,6 | MG +17,5 | SP +7,0
-   - Bahkan SP yang paling kuat (2.971 pesanan) ikut naik 4,7% -> 11,7%.
+   - SELURUH 11 provinsi memburuk, tanpa kecuali (pembanding Jan + Apr 2018):
+       ES +30,4 poin | RJ +26,5 | MG +19,8 | BA +19,5 | SP +8,7
+   - Bahkan SP yang paling kuat (2.971 pesanan) ikut naik 3,0% -> 11,7%.
+   - Secara nasional: 5,9% (Jan + Apr) -> 21,4% (Mar).
    - Artinya ini gangguan jaringan pengiriman berskala nasional,
      bukan masalah satu wilayah atau satu penjual.
 
@@ -349,7 +395,7 @@ ORDER BY 1;
 -- ============================================
 -- Q5: BERAPA KERUGIAN AKIBAT KETERLAMBATAN?
 -- Ukuran dampak: skor ulasan pelanggan.
--- Hanya pesanan yang punya ulasan (646 pesanan tanpa ulasan dikecualikan).
+-- Hanya pesanan yang punya ulasan (643 pesanan tanpa ulasan dikecualikan).
 -- ============================================
 
 -- Q5a. Skor ulasan: telat vs tepat waktu
@@ -403,17 +449,17 @@ WHERE in_analysis_period
 
    DAMPAKNYA BESAR DAN TERUKUR (Q5a)
    - Skor ulasan jatuh dari 4,30 (tepat waktu) ke 2,57 (telat).
-   - Ulasan 1-2 bintang melonjak 9,19% -> 54,06%, hampir 6x lipat.
-   - Ulasan 5 bintang anjlok 62,45% -> 22,24%.
+   - Ulasan 1-2 bintang melonjak 9,19% -> 54,05%, hampir 6x lipat.
+   - Ulasan 5 bintang anjlok 62,45% -> 22,25%.
 
    ADA AMBANG BATAS KESABARAN PELANGGAN (Q5b) - TEMUAN PALING PENTING
        tepat waktu   : skor 4,30 | 1-2 bintang  9,19%
        telat 1-3 hari: skor 3,76 | 1-2 bintang 19,22%
-       telat 4-7 hari: skor 2,32 | 1-2 bintang 61,29%   <- LONJAKAN
+       telat 4-7 hari: skor 2,32 | 1-2 bintang 61,25%   <- LONJAKAN
        telat 8-15 hari: skor 1,73 | 1-2 bintang 78,58%
        telat >15 hari : skor 1,72 | 1-2 bintang 78,30%
    - Titik patahnya ada antara hari ke-3 dan ke-7: ulasan buruk melompat
-     3x lipat (19,22% -> 61,29%).
+     3x lipat (19,22% -> 61,25%).
    - Setelah 8 hari, kerusakannya jenuh - telat 10 hari dan telat 60 hari
      dampaknya sama saja (78%). Pelanggan sudah terlanjur kecewa.
 
@@ -421,7 +467,7 @@ WHERE in_analysis_period
    - 4.139 ulasan buruk pada pesanan telat, padahal seandainya tepat waktu
      hanya wajar muncul 704. Artinya 3.435 pelanggan kecewa yang
      SEHARUSNYA TIDAK ADA.
-   - Nilai pesanan yang terlambat: BRL 1.123.857.
+   - Nilai pesanan yang terlambat: BRL 1.124.036.
 
    IMPLIKASI OPERASIONAL: target perbaikan bukan "nol keterlambatan",
    melainkan "jangan sampai telat lebih dari 3 hari". Menekan keterlambatan
