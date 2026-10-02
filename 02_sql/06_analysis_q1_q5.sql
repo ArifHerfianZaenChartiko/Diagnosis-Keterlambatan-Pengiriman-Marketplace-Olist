@@ -342,8 +342,7 @@ FROM (
           AND purchase_ts <  '2018-05-01'
     ) b
     GROUP BY customer_state
-    HAVING COUNT(*) FILTER (WHERE purchase_ts >= '2018-03-01'
-                              AND purchase_ts <  '2018-04-01') >= 100
+    HAVING COUNT(*) FILTER (WHERE bulan = 3) >= 100
 ) x
 ORDER BY selisih_poin DESC;
 
