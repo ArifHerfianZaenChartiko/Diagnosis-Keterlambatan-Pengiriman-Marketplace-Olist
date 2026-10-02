@@ -100,7 +100,12 @@ Menarik data dari `analytics.fact_order_delivery` lewat SQLAlchemy, lalu menghit
 `01_crosscheck_metrics.xlsx` — verifikasi ketiga atas angka yang sama, memakai pivot table/formula manual di luar SQL dan Python.
 
 ### 4.4 Dashboard Power BI (`05_dashboard/`)
-`olist_ops_dashboard.pbix` (+ ekspor PDF & screenshot `dashboard_overview.png`). Menyajikan versi interaktif dari temuan Q1–Q4 untuk eksplorasi mandiri oleh stakeholder.
+`olist_ops_dashboard.pbix` (+ ekspor PDF & screenshot). Menyajikan versi interaktif dari temuan Q1–Q5 untuk eksplorasi mandiri oleh stakeholder, dalam dua halaman analisis:
+
+- **Dashboard** — ringkasan KPI, tren bulanan, waktu tahapan, provinsi terburuk, dan scatter volume vs persen telat per penjual (penjual besar berkumpul di sekitar rata-rata 8,13%, bukti bahwa mereka muncul di atas karena volume, bukan kinerja).
+- **Kepuasan & Janji** — ambang kesabaran pelanggan (ulasan buruk melonjak di telat 4–7 hari) dan tren buffer janji yang menyusut dari 39,0 ke 13,4 hari.
+
+![Halaman Kepuasan & Janji](05_dashboard/dashboard_kepuasan_janji.png)
 
 ### 4.5 Laporan (`06_report/`)
 `insight_report.md/.pdf/.docx` — laporan naratif lengkap: latar belakang, metode, temuan per pertanyaan, dan rekomendasi. Ini dokumen paling detail di proyek ini.
