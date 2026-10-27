@@ -1,21 +1,21 @@
 -- =============================================================================
--- 01_create_schema.sql
+-- 01_buat_skema.sql
 -- Tujuan    : Membuat skema raw & analytics + 7 tabel sumber
--- Sumber    : 01_data_raw/*.csv (Olist, Sep 2016 - Okt 2018)
+-- Sumber    : 01_data_dan_pertanyaan/data_mentah/*.csv (Olist, Sep 2016 - Okt 2018)
 -- Prasyarat : CREATE DATABASE olist_ops;  (dijalankan di database postgres)
--- Catatan   : Constraint sengaja belum dipasang. Lihat 03_add_constraints.sql
+-- Catatan   : Kunci relasi (PK/FK) sengaja belum dipasang. Lihat 03_pasang_kunci_relasi.sql
 --             NOT NULL tidak dipakai karena data sumber banyak yang kosong.
 -- =============================================================================
 
--- Database dibuat terpisah, sebelum script ini (jalankan di database postgres):
+-- Database dibuat terpisah, sebelum skrip ini (jalankan di database postgres):
 --   CREATE DATABASE olist_ops;
--- Lalu pindah ke database olist_ops dan jalankan sisa script di bawah.
+-- Lalu pindah ke database olist_ops dan jalankan sisa skrip di bawah.
 
 -- Membuat skema raw dan analytics untuk pemisahan data mentah dan diolah
 CREATE SCHEMA raw;
 CREATE SCHEMA analytics;
 
--- Membuat Tabel data raw
+-- Membuat tabel data mentah (skema raw)
 -- 1. Pelanggan
 CREATE TABLE raw.customers (
     customer_id               VARCHAR(32),

@@ -1,11 +1,11 @@
 -- ============================================
--- 05_build_fact_table.sql
+-- 05_bangun_tabel_fakta.sql
 -- Tujuan : Membangun analytics.fact_order_delivery
 -- Bentuk : VIEW (bukan tabel fisik) - tidak menyalin data,
 --          otomatis ikut kalau data sumber berubah.
--- Grain  : SATU BARIS = SATU PESANAN (order_id unik)
+-- Rincian: SATU BARIS = SATU PESANAN (order_id unik)
 --
--- Batasan yang diterapkan (dasar: 04_data_quality_audit.sql):
+-- Batasan yang diterapkan (dasar: 04_audit_kualitas_data.sql):
 --   1. Hanya order_status = 'delivered' DAN tanggal terima terisi -> 96.470 pesanan
 --   2. Waktu tahapan dihitung dari tanggal BELI, bukan tanggal disetujui,
 --      karena 1.359 pesanan tercatat ke kurir sebelum disetujui (Temuan #2)

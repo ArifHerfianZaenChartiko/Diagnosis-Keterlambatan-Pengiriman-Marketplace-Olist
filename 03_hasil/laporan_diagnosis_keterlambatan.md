@@ -2,13 +2,13 @@
 
 Periode Jan 2017 – Ags 2018
 
-Disusun oleh Arif Herfian Zaen Chartiko (Operations Analyst) untuk Head of Logistics & Fulfillment
+Disusun oleh Arif Herfian Zaen Chartiko (Analis Operasional) untuk Kepala Divisi Logistik & Pemenuhan Pesanan
 
 ---
 
 ## 1. Ringkasan Eksekutif
 
-Dari 96.184 pesanan yang dikirimkan sepanjang Jan 2017 – Ags 2018, sebanyak 7.822 tiba melewati tanggal yang dijanjikan. On-Time Delivery Rate berada di 91,87%.
+Dari 96.184 pesanan yang dikirimkan sepanjang Jan 2017 – Ags 2018, sebanyak 7.822 tiba melewati tanggal yang dijanjikan. Tingkat ketepatan waktu pengiriman (OTD) berada di 91,87%.
 
 Angka itu terdengar sehat, tetapi menyembunyikan tiga hal yang tidak terlihat dari ringkasan bulanan.
 
@@ -26,17 +26,17 @@ Dampak yang bisa dihitung dari periode ini: 3.435 pelanggan kecewa yang seharusn
 
 ## 2. Latar Belakang dan Pertanyaan
 
-Olist adalah marketplace yang menghubungkan penjual kecil di Brasil dengan pembeli, dengan pengiriman ditangani mitra kurir. Setiap pesanan membawa tanggal perkiraan tiba yang dijanjikan kepada pembeli saat checkout. Sebuah pesanan disebut terlambat bila tanggal terima aktual melewati tanggal janji tersebut.
+Olist adalah marketplace yang menghubungkan penjual kecil di Brasil dengan pembeli, dengan pengiriman ditangani mitra kurir. Setiap pesanan membawa tanggal perkiraan tiba yang dijanjikan kepada pembeli saat transaksi. Sebuah pesanan disebut terlambat bila tanggal terima aktual melewati tanggal janji tersebut.
 
 Analisis ini menjawab lima pertanyaan:
 
 |     | Pertanyaan                                                                                       |
 | --- | ------------------------------------------------------------------------------------------------ |
-| Q1  | Seberapa parah keterlambatannya? Berapa persen pesanan telat, seberapa lama, dan kapan memburuk. |
-| Q2  | Di tahap mana keterlambatan terjadi? Gudang penjual atau pengiriman kurir.                       |
-| Q3  | Siapa atau apa penyumbang terbesarnya? Penjual, wilayah tujuan, atau jenis produk.               |
-| Q4  | Kapan risikonya memuncak? Pola musiman dan penyebab krisis Feb–Mar 2018.                         |
-| Q5  | Berapa kerugiannya? Dampak keterlambatan terhadap kepuasan pelanggan.                            |
+| P1  | Seberapa parah keterlambatannya? Berapa persen pesanan telat, seberapa lama, dan kapan memburuk. |
+| P2  | Di tahap mana keterlambatan terjadi? Gudang penjual atau pengiriman kurir.                       |
+| P3  | Siapa atau apa penyumbang terbesarnya? Penjual, wilayah tujuan, atau jenis produk.               |
+| P4  | Kapan risikonya memuncak? Pola musiman dan penyebab krisis Feb–Mar 2018.                         |
+| P5  | Berapa kerugiannya? Dampak keterlambatan terhadap kepuasan pelanggan.                            |
 
 Urutannya disusun menyempit: dari mengukur besarnya masalah, mempersempit ke tahap dan pelaku, lalu menutup dengan nilai kerugiannya.
 
@@ -44,24 +44,24 @@ Urutannya disusun menyempit: dari mengukur besarnya masalah, mempersempit ke tah
 
 ## 3. Data dan Metode
 
-|                |                                                                        |
-| -------------- | ---------------------------------------------------------------------- |
-| Sumber         | PostgreSQL, view `analytics.fact_order_delivery`                       |
-| Basis analisis | 96.184 pesanan                                                         |
-| Periode        | 1 Jan 2017 – 31 Ags 2018                                               |
-| Cakupan        | Hanya pesanan berstatus `delivered` dengan tanggal terima terisi       |
-| Dikecualikan   | 19 pesanan dengan urutan tanggal mustahil                              |
-| Skor ulasan    | Diambil dari ulasan terbaru per pesanan                                |
-| Validasi       | Angka dicek silang di PostgreSQL, Python, dan Excel — hasilnya identik |
+|                |                                                                             |
+| -------------- | --------------------------------------------------------------------------- |
+| Sumber         | Basis data PostgreSQL, tabel analisis `analytics.fact_order_delivery`       |
+| Basis analisis | 96.184 pesanan                                                              |
+| Periode        | 1 Jan 2017 – 31 Ags 2018                                                    |
+| Cakupan        | Hanya pesanan berstatus terkirim (`delivered`) dengan tanggal terima terisi |
+| Dikecualikan   | 19 pesanan dengan urutan tanggal mustahil                                   |
+| Skor ulasan    | Diambil dari ulasan terbaru per pesanan                                     |
+| Validasi       | Angka dicek silang di PostgreSQL, Python, dan Excel — hasilnya identik      |
 
 **Definisi tahapan.** Waktu tempuh sebuah pesanan dipecah menjadi dua ruas yang tidak tumpang tindih:
 
 - **Ke kurir** = tanggal serah ke kurir − tanggal pembelian. Ini porsi penjual: waktu menyiapkan dan menyerahkan barang.
 - **Transit** = tanggal terima pelanggan − tanggal serah ke kurir. Ini porsi jaringan pengiriman.
 
-Pemisahan inilah yang memungkinkan pertanyaan Q2 dijawab secara tegas, bukan lewat dugaan.
+Pemisahan inilah yang memungkinkan pertanyaan P2 dijawab secara tegas, bukan lewat dugaan.
 
-**Penanganan anomali.** 19 pesanan tercatat diterima pelanggan lebih dulu daripada diserahkan ke kurir — mustahil secara fisik, dan menghasilkan waktu transit negatif. Pesanan ini ditandai `has_sequence_anomaly` dan dikeluarkan dari seluruh perhitungan. Seluruhnya kebetulan berstatus tepat waktu, sehingga jumlah pesanan telat tidak berubah.
+**Penanganan anomali.** 19 pesanan tercatat diterima pelanggan lebih dulu daripada diserahkan ke kurir — mustahil secara fisik, dan menghasilkan waktu transit negatif. Pesanan ini ditandai sebagai anomali dan dikeluarkan dari seluruh perhitungan. Seluruhnya kebetulan berstatus tepat waktu, sehingga jumlah pesanan telat tidak berubah.
 
 **Rata-rata dan median dilaporkan bersama.** Rata-rata dipakai untuk menaksir beban total, median untuk menggambarkan pengalaman pelanggan pada umumnya. Keduanya diperlukan karena sebaran keterlambatan sangat miring. Khusus untuk membagi selisih waktu ke tiap tahap, dipakai rata-rata, karena hanya rata-rata yang bisa dijumlahkan: rata-rata ke kurir ditambah rata-rata transit sama dengan rata-rata total.
 
@@ -71,7 +71,7 @@ Pemisahan inilah yang memungkinkan pertanyaan Q2 dijawab secara tegas, bukan lew
 
 ### 4.1 Seberapa parah keterlambatannya
 
-Sepanjang Jan 2017 – Ags 2018, Olist mengirimkan 96.184 pesanan. Sebanyak 7.822 di antaranya tiba melewati tanggal yang dijanjikan, atau 8,13%. Dinyatakan sebagai ukuran kinerja, On-Time Delivery Rate berada di 91,87%. Angka itu terdengar sehat, tetapi artinya 8 dari setiap 100 pelanggan menerima barangnya terlambat.
+Sepanjang Jan 2017 – Ags 2018, Olist mengirimkan 96.184 pesanan. Sebanyak 7.822 di antaranya tiba melewati tanggal yang dijanjikan, atau 8,13%. Dinyatakan sebagai ukuran kinerja, tingkat ketepatan waktu pengiriman (OTD) berada di 91,87%. Angka itu terdengar sehat, tetapi artinya 8 dari setiap 100 pelanggan menerima barangnya terlambat.
 
 Yang lebih penting adalah seberapa jauh melesetnya. Rata-rata keterlambatan mencapai 9,55 hari, sementara mediannya 5,81 hari, dengan kasus terparah 188,98 hari. Selisih 3,74 hari antara rata-rata dan median menunjukkan sebaran yang miring: separuh pesanan telat meleset tidak lebih dari 5,81 hari, sedangkan segelintir kasus ekstrem menarik rata-rata jauh ke atas. Sebagai pembanding, waktu kirim normal dari pembelian sampai diterima adalah 10,21 hari, sehingga keterlambatan yang khas menambah lebih dari separuh waktu tunggu yang seharusnya.
 
@@ -137,14 +137,14 @@ Satu pengecualian layak diselidiki terpisah: **Rio de Janeiro mencatat 13,52% ke
 
 Dugaan pertama adalah tanggal janji untuk Rio de Janeiro terlalu optimis. Data membantah dugaan itu. Ruang antara janji dan transit di Rio de Janeiro justru setara dengan Minas Gerais, yang tingkat telatnya hanya 5,63%. Yang berbeda adalah ekornya:
 
-| Provinsi            | Telat  | Ruang janji | Transit p90 |
-| ------------------- | ------ | ----------- | ----------- |
-| Rio de Janeiro (RJ) | 13,52% | 16,21 hari  | 24,18 hari  |
-| Minas Gerais (MG)   | 5,63%  | 16,38 hari  | 15,18 hari  |
+| Provinsi            | Telat  | Ruang janji | Transit persentil-90 |
+| ------------------- | ------ | ----------- | -------------------- |
+| Rio de Janeiro (RJ) | 13,52% | 16,21 hari  | 24,18 hari           |
+| Minas Gerais (MG)   | 5,63%  | 16,38 hari  | 15,18 hari           |
 
 Ruang janji adalah median selisih janji dikurangi median transit (RJ 24,59 − 8,38 hari; MG 23,58 − 7,20 hari). Pesanan ke Rio de Janeiro pada umumnya sampai cepat, tetapi 10% yang paling lambat butuh 24 hari atau lebih, sembilan hari lebih lama dari Minas Gerais. Masalah Rio de Janeiro adalah **transit yang tidak konsisten**, bukan rumus janji.
 
-**Jenis produk bukan faktor utama.** Dari 21 kategori dengan minimal 1.000 item, tingkat keterlambatan berada di rentang 5,39% sampai 9,75% — jauh lebih sempit dari rentang antarprovinsi 5,02% sampai 19,64%. Berat produk juga tidak menunjukkan pola: electronics yang ringan (median 200 g) justru tertinggi, sementara office_furniture yang berat (median 10.975 g) berada di 8,91%.
+**Jenis produk bukan faktor utama.** Dari 21 kategori dengan minimal 1.000 item, tingkat keterlambatan berada di rentang 5,39% sampai 9,75% — jauh lebih sempit dari rentang antarprovinsi 5,02% sampai 19,64%. Berat produk juga tidak menunjukkan pola: kategori elektronik yang ringan (median 200 g) justru tertinggi, sementara furnitur kantor yang berat (median 10.975 g) berada di 8,91%.
 
 > **Catatan pembacaan.** Peringkat provinsi di atas dibatasi pada provinsi dengan minimal 500 pesanan, supaya provinsi bervolume kecil tidak menguasai daftar hanya karena penyebutnya sedikit. Dasbor tidak memakai batas tersebut, sehingga puncaknya berbeda: Alagoas 23,99% dari 396 pesanan dan Piauí 16,00% dari 475 pesanan. Keduanya benar, hanya menjawab pertanyaan yang berbeda — laporan ini menyoroti provinsi bervolume besar yang bermasalah, dasbor menampilkan seluruh provinsi.
 
@@ -220,13 +220,13 @@ Dasarnya 4.2: Nov 2017 adalah masalah kapasitas gudang, sedangkan Feb–Mar 2018
 
 ## 6. Batasan Analisis
 
-**Cakupan data.** Analisis ini hanya mencakup pesanan berstatus `delivered` yang tanggal terimanya terisi. Pesanan yang dibatalkan, hilang, atau tidak pernah sampai tidak masuk hitungan, sehingga angka keterlambatan di sini adalah batas bawah dari total pengalaman buruk pelanggan.
+**Cakupan data.** Analisis ini hanya mencakup pesanan berstatus terkirim (`delivered`) yang tanggal terimanya terisi. Pesanan yang dibatalkan, hilang, atau tidak pernah sampai tidak masuk hitungan, sehingga angka keterlambatan di sini adalah batas bawah dari total pengalaman buruk pelanggan.
 
 **Periode.** Data berakhir pada Ags 2018. Tren perbaikan sejak Apr 2018 belum dapat dipastikan bertahan, dan kenaikan pada Ags 2018 belum dapat dipastikan sebagai awal pembalikan arah atau sekadar fluktuasi satu bulan.
 
 **Nilai kerugian.** BRL 1.124.036 adalah nilai pesanan yang terlambat, bukan kerugian yang benar-benar keluar. Data yang tersedia tidak memuat biaya kurir, biaya penanganan keluhan, maupun nilai pelanggan yang berhenti berbelanja, sehingga dampak finansial sesungguhnya tidak dapat dihitung dari sini.
 
-**Ukuran kepuasan.** Kepuasan pelanggan diwakili oleh skor ulasan. 643 pesanan tanpa ulasan dikeluarkan dari perhitungan Q5. Pelanggan yang kecewa tetapi tidak menulis ulasan tidak terwakili.
+**Ukuran kepuasan.** Kepuasan pelanggan diwakili oleh skor ulasan. 643 pesanan tanpa ulasan dikeluarkan dari perhitungan P5. Pelanggan yang kecewa tetapi tidak menulis ulasan tidak terwakili.
 
 **Ambang volume.** Peringkat provinsi pada 4.3 memakai batas minimal 500 pesanan. Provinsi bervolume kecil dengan tingkat keterlambatan tinggi — Alagoas dan Piauí — tidak muncul di peringkat tersebut meskipun angkanya lebih buruk.
 
@@ -238,24 +238,24 @@ Dasarnya 4.2: Nov 2017 adalah masalah kapasitas gudang, sedangkan Feb–Mar 2018
 
 **Berkas pendukung**
 
-| Berkas                                                   | Isi                                           |
-| -------------------------------------------------------- | --------------------------------------------- |
-| `02_sql/01_create_schema.sql` – `03_add_constraints.sql` | Pembuatan skema dan pemuatan data mentah      |
-| `02_sql/04_data_quality_audit.sql`                       | Audit kualitas data                           |
-| `02_sql/05_build_fact_table.sql`                         | Pembentukan tabel fakta dan penandaan anomali |
-| `02_sql/06_analysis_q1_q5.sql`                           | Seluruh query dan kesimpulan Q1–Q5            |
-| `02_sql/07_build_seller_view.sql`                        | View kinerja penjual                          |
-| `02_sql/08_build_state_ref.sql`                          | Referensi nama dan wilayah provinsi           |
-| `03_python/01_validation.ipynb`                          | Validasi silang angka                         |
-| `05_dashboard/olist_ops_dashboard.pbix`                  | Dasbor Power BI                               |
-| `05_dashboard/olist_ops_dashboard.pdf`                   | Dasbor dalam bentuk PDF                       |
+| Berkas                                                           | Isi                                           |
+| ---------------------------------------------------------------- | --------------------------------------------- |
+| `02_proses/sql/01_buat_skema.sql` – `03_pasang_kunci_relasi.sql` | Pembuatan skema dan pemuatan data mentah      |
+| `02_proses/sql/04_audit_kualitas_data.sql`                       | Audit kualitas data                           |
+| `02_proses/sql/05_bangun_tabel_fakta.sql`                        | Pembentukan tabel fakta dan penandaan anomali |
+| `02_proses/sql/06_analisis_p1_p5.sql`                            | Seluruh kueri dan kesimpulan P1–P5            |
+| `02_proses/sql/07_bangun_ringkasan_penjual.sql`                  | Ringkasan kinerja penjual                     |
+| `02_proses/sql/08_bangun_rujukan_provinsi.sql`                   | Referensi nama dan wilayah provinsi           |
+| `02_proses/python/validasi_silang.ipynb`                         | Validasi silang angka                         |
+| `03_hasil/dasbor/dasbor_keterlambatan_pengiriman.pbix`           | Dasbor Power BI                               |
+| `03_hasil/dasbor/dasbor_keterlambatan_pengiriman.pdf`            | Dasbor dalam bentuk PDF                       |
 
 **Definisi istilah**
 
-| Istilah       | Arti                                                                                |
-| ------------- | ----------------------------------------------------------------------------------- |
-| OTD Rate      | On-Time Delivery Rate, persentase pesanan yang tiba pada atau sebelum tanggal janji |
-| Ke kurir      | Selisih hari antara pembelian dan penyerahan barang ke kurir                        |
-| Transit       | Selisih hari antara penyerahan ke kurir dan penerimaan oleh pelanggan               |
-| Selisih janji | Selisih hari antara tanggal janji dan tanggal pembelian                             |
-| BRL           | Real Brasil, mata uang yang dipakai pada data sumber                                |
+| Istilah       | Arti                                                                                                                |
+| ------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Tingkat OTD   | Tingkat ketepatan waktu pengiriman (on-time delivery), persentase pesanan yang tiba pada atau sebelum tanggal janji |
+| Ke kurir      | Selisih hari antara pembelian dan penyerahan barang ke kurir                                                        |
+| Transit       | Selisih hari antara penyerahan ke kurir dan penerimaan oleh pelanggan                                               |
+| Selisih janji | Selisih hari antara tanggal janji dan tanggal pembelian                                                             |
+| BRL           | Real Brasil, mata uang yang dipakai pada data sumber                                                                |

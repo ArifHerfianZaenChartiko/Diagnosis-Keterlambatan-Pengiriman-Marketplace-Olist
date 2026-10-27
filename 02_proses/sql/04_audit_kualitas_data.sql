@@ -1,5 +1,5 @@
 -- ============================================
--- 04_data_quality_audit.sql
+-- 04_audit_kualitas_data.sql
 -- Tujuan : Memeriksa kesehatan data sebelum analisis
 -- ============================================
 
@@ -41,7 +41,7 @@ FROM raw.orders;
 
 
 -- AUDIT 5: Pesanan yang punya lebih dari satu ulasan
--- Penting untuk Q5: satu pesanan harus punya satu skor, bukan dua.
+-- Penting untuk P5: satu pesanan harus punya satu skor, bukan dua.
 SELECT COUNT(*) AS pesanan_banyak_ulasan
 FROM (
     SELECT order_id

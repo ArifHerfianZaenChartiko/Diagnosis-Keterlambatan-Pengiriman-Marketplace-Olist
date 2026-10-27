@@ -1,10 +1,10 @@
 -- ============================================
--- 08_build_state_ref.sql
+-- 08_bangun_rujukan_provinsi.sql
 -- Tujuan : Tabel rujukan kode provinsi Brasil
 -- Alasan : Dataset Olist hanya menyimpan kode 2 huruf tanpa kamus.
---          Nama & wilayah ditambahkan agar dashboard terbaca oleh
+--          Nama & wilayah ditambahkan agar dasbor terbaca oleh
 --          orang yang tidak hafal geografi Brasil.
--- Grain  : SATU BARIS = SATU PROVINSI
+-- Rincian: SATU BARIS = SATU PROVINSI
 -- ============================================
 
 DROP TABLE IF EXISTS analytics.dim_state;

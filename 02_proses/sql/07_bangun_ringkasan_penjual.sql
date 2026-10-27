@@ -1,7 +1,7 @@
 -- ============================================
--- 07_build_seller_view.sql
--- Tujuan : View kinerja penjual untuk halaman Pareto di Power BI
--- Grain  : SATU BARIS = SATU PENJUAL
+-- 07_bangun_ringkasan_penjual.sql
+-- Tujuan : View (tabel virtual) kinerja penjual untuk dasbor Power BI
+-- Rincian: SATU BARIS = SATU PENJUAL
 -- Catatan: Sengaja diringkas per penjual (bukan per pesanan) supaya
 --          Power BI tidak berisiko menghitung ganda pesanan yang
 --          melibatkan lebih dari satu penjual.

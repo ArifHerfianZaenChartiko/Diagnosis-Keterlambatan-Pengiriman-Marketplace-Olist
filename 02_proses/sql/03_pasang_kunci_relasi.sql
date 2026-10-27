@@ -1,7 +1,7 @@
 -- ============================================
--- 03_add_constraints.sql
+-- 03_pasang_kunci_relasi.sql
 -- Tujuan  : Memasang PRIMARY KEY & FOREIGN KEY setelah data masuk
--- Alasan  : Constraint dipasang belakangan supaya FOREIGN KEY
+-- Alasan  : Kunci relasi dipasang belakangan supaya FOREIGN KEY
 --           berfungsi sebagai UJI INTEGRITAS data, bukan penghalang impor.
 -- ============================================
 
@@ -37,33 +37,33 @@ FROM raw.order_reviews;
 
 /*
 Ada beberapa masalah karena terdapat SELISIH sehingga tidak bisa dijadikan PK (Tidak Unik)
--- Kolom order_id di tabel order_items terdapat SELISH, masalah jika dijadikan kandidat PK
--- Kolom riview_id di tabel order_riviews terdapaat SELISIH, masalah jika dijadikan kandidat pk
+-- Kolom order_id di tabel order_items terdapat SELISIH, masalah jika dijadikan kandidat PK
+-- Kolom review_id di tabel order_reviews terdapat SELISIH, masalah jika dijadikan kandidat PK
 */
 
--- ada kandidat yang kayanya unik untuk PK yaitu kombinasi order_id & order_item_id, di test dulu
+-- ada kandidat yang tampaknya unik untuk PK, yaitu kombinasi order_id & order_item_id; diuji dulu
 SELECT COUNT(*) AS total_baris,
        COUNT(DISTINCT (order_id, order_item_id)) AS kombinasi_berbeda
 FROM raw.order_items;
 -- LOLOS
 
--- Coba cek kandidat lain untuk kolom reviews_id di tabel order_riviews
+-- Coba cek kandidat lain untuk kolom review_id di tabel order_reviews
 SELECT review_id, COUNT(*) AS jumlah
 FROM raw.order_reviews
 GROUP BY review_id
 HAVING COUNT(*) > 1
 LIMIT 5;
 
--- Masukkan 1 sample output untuk test
+-- Ambil 1 contoh hasil untuk diuji
 SELECT *
 FROM raw.order_reviews
 WHERE review_id = '00130cbe1f9d422698c812ed8ded1919';
 
--- ada kandidat cocok yaitu kombinasi review_id & order_id
+-- ada kandidat cocok, yaitu kombinasi review_id & order_id
 SELECT COUNT(*) AS total_baris,
        COUNT(DISTINCT (review_id, order_id)) AS kombinasi_berbeda
 FROM raw.order_reviews;
---LOLOS
+-- LOLOS
 
 
 -- ---------- PRIMARY KEY ----------
@@ -122,7 +122,7 @@ ALTER TABLE raw.products
     REFERENCES raw.product_category_name_translation(product_category_name);
 
 -- Pembenahan error raw.products
---1. Cari semua kategori yang tidak ada di kamus
+-- 1. Cari semua kategori yang tidak ada di kamus
 SELECT DISTINCT product_category_name
 FROM raw.products
 WHERE product_category_name IS NOT NULL
@@ -131,7 +131,7 @@ WHERE product_category_name IS NOT NULL
       FROM raw.product_category_name_translation
 );
 
---2. Hitung dampak
+-- 2. Hitung dampak
 SELECT COUNT(*) AS produk_terdampak
 FROM raw.products
 WHERE product_category_name IN ('pc_gamer', 'portateis_cozinha_e_preparadores_de_alimentos');
