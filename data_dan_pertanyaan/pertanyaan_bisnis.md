@@ -46,6 +46,6 @@ Data mentah ada di folder [`data_mentah/`](data_mentah/), berupa 7 file CSV deng
 
 - **Periode:** 1 Jan 2017 – 31 Ags 2018.
 - **Pesanan:** hanya yang berstatus terkirim dan tanggal terimanya tercatat.
-- **Basis akhir:** 96.184 pesanan, setelah pemeriksaan kualitas data (lihat [`../02_proses/`](../02_proses/)).
+- **Basis akhir:** 96.184 pesanan, setelah pemeriksaan kualitas data (lihat [`../proses/`](../proses/)).
 
-Jawaban atas kelima pertanyaan ada di folder [`../03_hasil/`](../03_hasil/).
+Jawaban atas kelima pertanyaan ada di folder [`../hasil/`](../hasil/).

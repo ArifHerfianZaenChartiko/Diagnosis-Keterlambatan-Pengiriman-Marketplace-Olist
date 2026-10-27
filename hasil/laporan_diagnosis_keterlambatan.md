@@ -238,17 +238,17 @@ Dasarnya 4.2: Nov 2017 adalah masalah kapasitas gudang, sedangkan Feb–Mar 2018
 
 **Berkas pendukung**
 
-| Berkas                                                           | Isi                                           |
-| ---------------------------------------------------------------- | --------------------------------------------- |
-| `02_proses/sql/01_buat_skema.sql` – `03_pasang_kunci_relasi.sql` | Pembuatan skema dan pemuatan data mentah      |
-| `02_proses/sql/04_audit_kualitas_data.sql`                       | Audit kualitas data                           |
-| `02_proses/sql/05_bangun_tabel_fakta.sql`                        | Pembentukan tabel fakta dan penandaan anomali |
-| `02_proses/sql/06_analisis_p1_p5.sql`                            | Seluruh kueri dan kesimpulan P1–P5            |
-| `02_proses/sql/07_bangun_ringkasan_penjual.sql`                  | Ringkasan kinerja penjual                     |
-| `02_proses/sql/08_bangun_rujukan_provinsi.sql`                   | Referensi nama dan wilayah provinsi           |
-| `02_proses/python/validasi_silang.ipynb`                         | Validasi silang angka                         |
-| `03_hasil/dasbor/dasbor_keterlambatan_pengiriman.pbix`           | Dasbor Power BI                               |
-| `03_hasil/dasbor/dasbor_keterlambatan_pengiriman.pdf`            | Dasbor dalam bentuk PDF                       |
+| Berkas                                                            | Isi                                           |
+| ----------------------------------------------------------------- | --------------------------------------------- |
+| `proses/01_sql/01_buat_skema.sql` – `03_pasang_kunci_relasi.sql`  | Pembuatan skema dan pemuatan data mentah      |
+| `proses/01_sql/04_audit_kualitas_data.sql`                        | Audit kualitas data                           |
+| `proses/01_sql/05_bangun_tabel_fakta.sql`                         | Pembentukan tabel fakta dan penandaan anomali |
+| `proses/01_sql/06_analisis_p1_p5.sql`                             | Seluruh kueri dan kesimpulan P1–P5            |
+| `proses/01_sql/07_bangun_ringkasan_penjual.sql`                   | Ringkasan kinerja penjual                     |
+| `proses/01_sql/08_bangun_rujukan_provinsi.sql`                    | Referensi nama dan wilayah provinsi           |
+| `proses/02_python/validasi_silang.ipynb`                          | Validasi silang angka                         |
+| `hasil/dasbor/dasbor_keterlambatan_pengiriman.pbix`               | Dasbor Power BI                               |
+| `hasil/dasbor/dasbor_keterlambatan_pengiriman.pdf`                | Dasbor dalam bentuk PDF                       |
 
 **Definisi istilah**
 

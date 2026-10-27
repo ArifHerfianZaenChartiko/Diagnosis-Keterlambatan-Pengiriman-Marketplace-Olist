@@ -1,7 +1,7 @@
 -- =============================================================================
 -- 01_buat_skema.sql
 -- Tujuan    : Membuat skema raw & analytics + 7 tabel sumber
--- Sumber    : 01_data_dan_pertanyaan/data_mentah/*.csv (Olist, Sep 2016 - Okt 2018)
+-- Sumber    : data_dan_pertanyaan/data_mentah/*.csv (Olist, Sep 2016 - Okt 2018)
 -- Prasyarat : CREATE DATABASE olist_ops;  (dijalankan di database postgres)
 -- Catatan   : Kunci relasi (PK/FK) sengaja belum dipasang. Lihat 03_pasang_kunci_relasi.sql
 --             NOT NULL tidak dipakai karena data sumber banyak yang kosong.

@@ -6,7 +6,7 @@ Analisis data menyeluruh, dari data mentah sampai rekomendasi bisnis, untuk menj
 **Disusun oleh:** Arif Herfian Zaen Chartiko (Analis Data Operasional)
 **Ditujukan untuk:** Kepala Divisi Logistik & Pemenuhan Pesanan
 
-![Dasbor Power BI](03_hasil/dasbor/tangkapan_ringkasan.png)
+![Dasbor Power BI](hasil/dasbor/tangkapan_ringkasan.png)
 
 ---
 
@@ -14,19 +14,22 @@ Analisis data menyeluruh, dari data mentah sampai rekomendasi bisnis, untuk menj
 
 | Kebutuhan                                 | Buka                                                                                                                                                                 |
 | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Ringkasan untuk rapat (13 slide)          | [`03_hasil/presentasi_diagnosis_keterlambatan.pptx`](03_hasil/presentasi_diagnosis_keterlambatan.pptx)                                                               |
-| Laporan lengkap beserta alasannya         | [`03_hasil/laporan_diagnosis_keterlambatan.pdf`](03_hasil/laporan_diagnosis_keterlambatan.pdf) (juga `.docx` / [`.md`](03_hasil/laporan_diagnosis_keterlambatan.md)) |
-| Menjelajah data sendiri                   | [`03_hasil/dasbor/`](03_hasil/dasbor/), dasbor Power BI (`.pbix`) beserta versi PDF-nya                                                                              |
-| Pertanyaan bisnis dan data yang dipakai   | [`01_data_dan_pertanyaan/pertanyaan_bisnis.md`](01_data_dan_pertanyaan/pertanyaan_bisnis.md)                                                                         |
-| Memeriksa atau menjalankan ulang analisis | [`02_proses/README.md`](02_proses/README.md)                                                                                                                         |
+| Ringkasan untuk rapat (13 slide)          | [`hasil/presentasi_diagnosis_keterlambatan.pptx`](hasil/presentasi_diagnosis_keterlambatan.pptx)                                                               |
+| Laporan lengkap beserta alasannya         | [`hasil/laporan_diagnosis_keterlambatan.pdf`](hasil/laporan_diagnosis_keterlambatan.pdf) (juga `.docx` / [`.md`](hasil/laporan_diagnosis_keterlambatan.md)) |
+| Menjelajah data sendiri                   | [`hasil/dasbor/`](hasil/dasbor/), dasbor Power BI (`.pbix`) beserta versi PDF-nya                                                                              |
+| Pertanyaan bisnis dan data yang dipakai   | [`data_dan_pertanyaan/pertanyaan_bisnis.md`](data_dan_pertanyaan/pertanyaan_bisnis.md)                                                                         |
+| Memeriksa atau menjalankan ulang analisis | [`proses/README.md`](proses/README.md)                                                                                                                         |
 
 ## Struktur Folder
 
 ```
 Diagnosis Keterlambatan Pengiriman Marketplace Olist/
-├── 01_data_dan_pertanyaan/   Masukan: pertanyaan bisnis + 7 CSV data mentah
-├── 02_proses/                Pengerjaan: SQL, validasi Python, validasi Excel
-├── 03_hasil/                 Hasil akhir: laporan, presentasi, dasbor
+├── data_dan_pertanyaan/   Masukan: pertanyaan bisnis + 7 CSV data mentah
+├── proses/                Pengerjaan, berurutan:
+│   ├── 01_sql/            database, audit kualitas data, analisis P1–P5
+│   ├── 02_python/         validasi silang dengan Pandas
+│   └── 03_excel/          validasi ketiga + data bersih
+├── hasil/                 Hasil akhir: laporan, presentasi, dasbor
 └── README.md
 ```
 
@@ -55,7 +58,7 @@ Tingkat ketepatan waktu pengiriman (OTD) Olist = **91,87%** (8,13% pesanan telat
 5. **Selidiki Rio de Janeiro secara terpisah.** Telat 13,52% padahal median transit hanya 8,38 hari (12.310 pesanan). Ruang janjinya setara Minas Gerais, jadi bukan soal rumus janji; masalahnya ada pada 10% pesanan paling lambat yang transitnya 24 hari atau lebih (Minas Gerais 15 hari).
 6. **Siapkan dua protokol musiman yang berbeda.** Nov 2017 adalah masalah kapasitas gudang, Feb–Mar 2018 adalah gangguan jaringan kurir nasional. Satu solusi untuk keduanya akan meleset.
 
-![Halaman Kepuasan & Janji](03_hasil/dasbor/tangkapan_kepuasan_janji.png)
+![Halaman Kepuasan & Janji](hasil/dasbor/tangkapan_kepuasan_janji.png)
 
 ---
 
