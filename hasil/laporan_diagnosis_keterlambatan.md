@@ -16,7 +16,7 @@ Angka itu terdengar sehat, tetapi menyembunyikan tiga hal yang tidak terlihat da
 
 **Kedua, masalahnya ada di jalan, bukan di gudang.** Pesanan yang telat menghabiskan 23,93 hari dalam perjalanan kurir, dibanding 6,93 hari pada pesanan tepat waktu. Dari total selisih rata-rata 20,64 hari antara pesanan telat dan tepat waktu, 86% terjadi di tahap pengiriman kurir dan hanya 14% di gudang penjual. Pembinaan penjual tidak akan menyentuh akar masalahnya.
 
-**Ketiga, kerusakannya terjadi lebih cepat dari dugaan.** Skor ulasan jatuh dari 4,30 menjadi 2,57 ketika pesanan telat. Titik patahnya ada antara hari ke-3 dan ke-7: ulasan 1–2 bintang melonjak dari 19,22% menjadi 61,25%. Setelah hari ke-8, kerusakannya jenuh — telat 10 hari dan telat 60 hari sama-sama menghasilkan sekitar 78% ulasan buruk.
+**Ketiga, kerusakannya terjadi lebih cepat dari dugaan.** Skor ulasan jatuh dari 4,30 menjadi 2,57 ketika pesanan telat. Titik patahnya ada saat telat masuk 4–7 hari: ulasan 1–2 bintang melonjak dari 19,22% (telat 1–3 hari) menjadi 61,25%. Setelah hari ke-8, kerusakannya jenuh — telat 10 hari dan telat 60 hari sama-sama menghasilkan sekitar 78% ulasan buruk.
 
 Konsekuensinya untuk strategi operasional: **target yang tepat bukan "nol keterlambatan", melainkan "jangan sampai telat lebih dari 3 hari".** Menekan keterlambatan parah menjadi keterlambatan ringan menyelamatkan sebagian besar kepuasan pelanggan dengan biaya yang jauh lebih murah daripada mengejar ketepatan sempurna.
 
@@ -122,7 +122,7 @@ Kesimpulan bagian ini: **keterlambatan terjadi di tahap pengiriman kurir.** Perb
 
 Penjual yang benar-benar bermasalah justru bervolume kecil dan tidak terlihat di daftar teratas — misalnya satu penjual dengan 389 pesanan dan 23,14% keterlambatan, serta satu lagi dengan 380 pesanan dan 16,58%. Jumlah mereka sedikit, sehingga program pembinaan penjual akan berdampak kecil terhadap angka keseluruhan.
 
-**Wilayah tujuan adalah akar masalahnya.** Rentang antarprovinsi mencapai 3,9 kali lipat, dari 19,64% di Maranhão sampai 5,02% di Paraná. Yang menentukan bukan jarak semata, melainkan lama transit:
+**Wilayah tujuan adalah akar masalahnya.** Rentang antarprovinsi mencapai 3,9 kali lipat, dari 19,64% di Maranhão sampai 5,02% di Paraná. Pada umumnya, provinsi dengan transit lebih lama mencatat keterlambatan lebih tinggi:
 
 | Provinsi       | Telat  | Median transit |
 | -------------- | ------ | -------------- |
@@ -131,7 +131,7 @@ Penjual yang benar-benar bermasalah justru bervolume kecil dan tidak terlihat di
 | São Paulo (SP) | 5,90%  | 4,42 hari      |
 | Paraná (PR)    | 5,02%  | 7,18 hari      |
 
-Provinsi di utara dan timur laut — Maranhão, Ceará, Pará, Bahia — konsisten menempati posisi terburuk. Sebaliknya São Paulo menyerap 40.386 pesanan atau 42% dari seluruh volume, dengan kinerja terbaik kedua.
+Provinsi di utara dan timur laut — Maranhão, Ceará, Pará, Bahia — konsisten menempati posisi terburuk. Sebaliknya São Paulo menyerap 40.386 pesanan atau 42% dari seluruh volume, dengan kinerja terbaik kedua. Namun lama transit bukan satu-satunya faktor: Paraná transitnya lebih lama dari São Paulo (7,18 vs 4,42 hari), tetapi tingkat keterlambatannya justru lebih rendah.
 
 Satu pengecualian layak diselidiki terpisah: **Rio de Janeiro mencatat 13,52% keterlambatan padahal median transitnya hanya 8,38 hari** — jauh lebih cepat dari Maranhão maupun Pará. Dengan volume 12.310 pesanan, ini bukan kasus kecil.
 
@@ -150,9 +150,9 @@ Ruang janji adalah median selisih janji dikurangi median transit (RJ 24,59 − 8
 
 ### 4.4 Kapan risikonya memuncak
 
-**Janji pengiriman makin ketat dari waktu ke waktu.** Selisih antara tanggal janji dan tanggal pembelian menyusut terus, dari 39,0 hari pada Jan 2017 menjadi 13,4 hari pada Ags 2018 — turun 66%. Olist secara sadar menjanjikan pengiriman yang makin cepat.
+**Janji pengiriman makin ketat dari waktu ke waktu.** Selisih antara tanggal janji dan tanggal pembelian cenderung menyusut, dari 39,0 hari pada Jan 2017 menjadi 13,4 hari pada Ags 2018 — turun 66%, meski sempat naik lagi pada Des 2017 dan Jun 2018. Olist secara sadar menjanjikan pengiriman yang makin cepat.
 
-Perbaikan setelah Mar 2018 nyata tetapi belum stabil. Apr turun ke 5,31%, naik lagi ke 8,24% pada Mei, lalu mencapai titik terbaik sepanjang periode pada Jun dengan 1,36%. Yang penting, perbaikan ini terjadi meskipun janjinya makin ketat — jadi ini hasil operasional yang nyata, bukan hasil melonggarkan target.
+Perbaikan setelah Mar 2018 nyata tetapi belum stabil. Apr turun ke 5,31%, naik lagi ke 8,24% pada Mei, lalu mencapai titik terbaik sepanjang periode pada Jun dengan 1,36%. Pada Apr dan Mei, selisih janji berada di kisaran yang sama dengan sebelum krisis, jadi perbaikan di dua bulan itu bukan hasil melonggarkan target. Namun titik terbaik Jun bertepatan dengan janji yang kembali dilonggarkan, sehingga sebagian perbaikan di bulan itu kemungkinan ikut terbantu oleh target yang lebih longgar.
 
 Namun ada peringatan di ujung periode. Pada Ags 2018 selisih janji berada di titik terendah, 13,4 hari, dan keterlambatan justru naik kembali ke 10,39%. Janji mulai melewati batas kemampuan operasional. Pola serupa terlihat pada Mar 2018, ketika selisih janji justru diperketat dari 24,3 menjadi 21,3 hari tepat saat gangguan pengiriman sedang berlangsung, sehingga memperparah angka keterlambatan bulan itu.
 
@@ -186,7 +186,7 @@ Bahkan São Paulo, provinsi dengan kinerja paling stabil, naik dari 3,0% menjadi
 | Telat 8–15 hari          | 1,73        | 78,58%             |
 | Telat lebih dari 15 hari | 1,72        | 78,30%             |
 
-Titik patahnya berada antara hari ke-3 dan ke-7: ulasan buruk melompat tiga kali lipat, dari 19,22% ke 61,25%. Setelah hari ke-8 kerusakannya jenuh — pesanan yang telat 10 hari dan yang telat 60 hari sama-sama menghasilkan sekitar 78% ulasan buruk. Pelanggan sudah terlanjur kecewa, dan tambahan keterlambatan tidak lagi mengubah penilaiannya.
+Titik patahnya berada pada kelompok telat 4–7 hari: ulasan buruk melompat tiga kali lipat, dari 19,22% pada telat 1–3 hari ke 61,25%. Setelah hari ke-8 kerusakannya jenuh — pesanan yang telat 10 hari dan yang telat 60 hari sama-sama menghasilkan sekitar 78% ulasan buruk. Pelanggan sudah terlanjur kecewa, dan tambahan keterlambatan tidak lagi mengubah penilaiannya.
 
 Temuan ini bersambung dengan 4.1: median keterlambatan Olist adalah 5,81 hari, yang jatuh tepat di dalam kelompok 4–7 hari. Artinya keterlambatan yang **khas** pun sudah cukup parah untuk merusak kepuasan pelanggan — persoalannya bukan hanya pada kasus ekstrem.
 
@@ -202,7 +202,7 @@ Pesanan yang terlambat itu bernilai **BRL 1.124.036**. Angka ini adalah nilai pe
 Dasarnya 4.2: 86% selisih waktu antara pesanan telat dan tepat waktu terjadi di tahap transit. Program pembinaan penjual menyentuh ruas yang hanya menyumbang 14%, sehingga dampaknya terhadap angka keseluruhan akan kecil sekalipun berhasil.
 
 **2. Ubah target dari "nol keterlambatan" menjadi "tidak telat lebih dari 3 hari".**
-Dasarnya 4.5: kerusakan kepuasan pelanggan melonjak antara hari ke-3 dan ke-7, lalu jenuh setelah hari ke-8. Menarik pesanan yang telat 10 hari menjadi telat 3 hari menyelamatkan sebagian besar kepuasan, dan jauh lebih murah daripada mengejar ketepatan sempurna pada seluruh pesanan.
+Dasarnya 4.5: kerusakan kepuasan pelanggan melonjak begitu telat masuk 4–7 hari, lalu jenuh setelah hari ke-8. Menarik pesanan yang telat 10 hari menjadi telat 3 hari menyelamatkan sebagian besar kepuasan, dan jauh lebih murah daripada mengejar ketepatan sempurna pada seluruh pesanan.
 
 **3. Tetapkan batas bawah selisih janji pengiriman.**
 Dasarnya 4.4: selisih janji menyusut 66% dalam 20 bulan, dan pada Ags 2018 di angka 13,4 hari keterlambatan naik kembali ke 10,39%. Perlu ditetapkan batas bawah yang tidak boleh dilewati, agar janji kepada pembeli tidak melampaui kemampuan operasional.

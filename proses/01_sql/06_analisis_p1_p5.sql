@@ -271,9 +271,10 @@ ORDER BY persen_telat DESC;
 
    WILAYAH (P3c) - INI AKAR MASALAHNYA
    - Rentangnya 3,9x: MA 19,64% vs PR 5,02%.
-   - Tingkat telat mengikuti lama transit:
+   - Umumnya, makin lama transit makin tinggi telatnya:
        MA 19,64% (transit 15,68 hari) | PA 12,42% (transit 17,30)
        SP  5,90% (transit  4,42 hari) | PR  5,02% (transit  7,18)
+     Tidak mutlak: PR transitnya lebih lama dari SP, tapi telatnya lebih rendah.
    - Provinsi utara/timur laut (MA, CE, PA, BA) konsisten terburuk.
    - Pengecualian: RJ telat 13,52% padahal median transitnya hanya 8,38 hari.
      Volumenya besar (12.310 pesanan).
@@ -363,9 +364,11 @@ ORDER BY 1;
 
    JANJI PENGIRIMAN MAKIN KETAT (P4a)
    - Selisih janji cenderung menyusut: 39,0 hari (Jan 2017) -> 13,4 hari (Ags 2018),
-     turun 66%. Olist makin agresif menjanjikan kecepatan.
-   - Perbaikan setelah Mar 2018 nyata tapi belum stabil: Apr 5,31% -> Mei 8,24% -> Jun 1,36%. 
-   	 Tetap terjadi MESKI janjinya makin ketat, jadi ini perbaikan operasional nyata, bukan sekadar longgarkan target.
+     turun 66%, meski sempat naik lagi Des 2017 & Jun 2018. Olist makin agresif menjanjikan kecepatan.
+   - Perbaikan setelah Mar 2018 nyata tapi belum stabil: Apr 5,31% -> Mei 8,24% -> Jun 1,36%.
+     Apr-Mei terjadi pada selisih janji sekisar sebelum krisis, jadi bukan hasil longgarkan target.
+     Tapi Jun (terbaik) bertepatan dengan janji yang dilonggarkan lagi, sehingga sebagian
+     perbaikannya kemungkinan ikut terbantu target yang lebih longgar.
    - Peringatan: Ags 2018 selisih janji terendah 13,4 hari, tapi telat naik lagi
      ke 10,39%. Janji mulai melewati batas kemampuan operasional.
    - Mar 2018 selisih janji justru diperketat (24,3 -> 21,3) tepat saat gangguan
@@ -457,7 +460,7 @@ WHERE in_analysis_period
        telat 4-7 hari: skor 2,32 | 1-2 bintang 61,25%   <- LONJAKAN
        telat 8-15 hari: skor 1,73 | 1-2 bintang 78,58%
        telat >15 hari : skor 1,72 | 1-2 bintang 78,30%
-   - Titik patahnya ada antara hari ke-3 dan ke-7: ulasan buruk melompat
+   - Titik patahnya ada di kelompok telat 4-7 hari: ulasan buruk melompat
      3x lipat (19,22% -> 61,25%).
    - Setelah 8 hari, kerusakannya jenuh - telat 10 hari dan telat 60 hari
      dampaknya sama saja (78%). Pelanggan sudah terlanjur kecewa.
