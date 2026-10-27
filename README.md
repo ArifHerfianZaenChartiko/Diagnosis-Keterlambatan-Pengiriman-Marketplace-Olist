@@ -2,8 +2,8 @@
 
 Analisis data menyeluruh, dari data mentah sampai rekomendasi bisnis, untuk menjawab: *seberapa parah keterlambatan pengiriman Olist, di mana akar masalahnya, dan berapa kerugiannya?*
 
-**Periode data:** Jan 2017 – Ags 2018 | **Basis analisis:** 96.184 pesanan
-**Disusun oleh:** Arif Herfian Zaen Chartiko (Analis Operasional)
+**Periode data:** Jan 2017 – Ags 2018 | **Basis analisis:** 96.184 pesanan<br>
+**Disusun oleh:** Arif Herfian Zaen Chartiko (Analis Operasional)<br>
 **Ditujukan untuk:** Kepala Divisi Logistik & Pemenuhan Pesanan
 
 ![Dasbor Power BI](hasil/dasbor/tangkapan_ringkasan.png)
